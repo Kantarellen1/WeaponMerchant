@@ -4,20 +4,21 @@ from merchant_data import get_merchant_response
 
 app = FastAPI()
 
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to Gerik's Weapon Shop!", "endpoints": {"/talk_to_merchant": "POST to chat with the merchant", "/chat": "GET to open chat interface"}}
+@app.get("/town")
+async def town_square():
+    return FileResponse("town_square.html")
 
-@app.get("/chat")
-async def get_chat_interface():
-    return FileResponse("merchant.html")
+@app.get("/smithy")
+async def gerik_smithy():
+    return FileResponse("gerik_smithy.html")
 
-@app.get("/talk_to_merchant")
-async def talk_to_merchant_info():
-    return {
-        "message": "This endpoint requires POST method",
-        "usage": "POST /talk_to_merchant with JSON body: {\"player_id\": \"your_id\", \"message\": \"your_message\"}"
-    }
+@app.get("/apothecary") 
+async def elara_apothecary():
+    return FileResponse("elara_apothecary.html")
+
+@app.get("/general-store")
+async def finn_store():
+    return FileResponse("finn_general_store.html")
 
 @app.post("/talk_to_merchant")
 async def talk_to_merchant(request: Request):

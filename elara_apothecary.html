@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Elara's Apothecary - Potions & Herbs</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
+            color: white;
+        }
+        .apothecary-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            min-height: 100vh;
+        }
+        .apothecary-header { 
+            text-align: center; 
+            margin-bottom: 30px;
+            background: rgba(46,139,87,0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .bubble-sound { 
+            background: #e1f5fe; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            font-size: 12px; 
+            color: #333;
+            margin: 5px 0;
+        }
+        .chat-box { 
+            border: 3px solid #228B22; 
+            padding: 20px; 
+            margin: 20px 0; 
+            height: 400px; 
+            overflow-y: scroll; 
+            background: rgba(240,248,255,0.95);
+            color: #333;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(46,139,87,0.3);
+        }
+        .message { 
+            margin: 10px 0; 
+            padding: 8px; 
+            border-radius: 5px; 
+        }
+        .you { 
+            color: #000080; 
+            background: #e6f3ff; 
+            border-left: 4px solid #4169E1;
+        }
+        .merchant { 
+            color: #2E8B57; 
+            background: #f0fff0; 
+            font-weight: bold; 
+            border-left: 4px solid #2E8B57;
+        }
+        .system { 
+            color: #666; 
+            font-style: italic; 
+            background: #f5f5f5;
+            border-left: 4px solid #999;
+        }
+        .apothecary { 
+            color: #8B4513; 
+            background: #fff8dc; 
+            font-size: 12px;
+            text-align: center;
+            border: 1px dashed #2E8B57;
+        }
+        .input-area { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+        input[type="text"] { 
+            flex: 1; 
+            padding: 12px; 
+            font-size: 16px; 
+            border: 3px solid #228B22; 
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+        }
+        button { 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            background: #228B22; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { 
+            background: #32CD32; 
+        }
+        .leave-btn {
+            background: #8B4513;
+        }
+        .leave-btn:hover {
+            background: #A0522D;
+        }
+    </style>
+</head>
+<body>
+    <div class="apothecary-container">
+        <div class="apothecary-header">
+            <h1>🧪 Elara's Apothecary 🧪</h1>
+            <p>*The air is thick with the scent of herbs and bubbling potions*</p>
+            <p>"Knowledge and healing, in equal measure..."</p>
+        </div>
+        
+        <div class="bubble-sound">💨 *Bubble bubble* The cauldrons never rest... 🌿</div>
+        
+        <div class="chat-box" id="chatBox"></div>
+        
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Speak to Elara..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">Talk</button>
+            <button class="leave-btn" onclick="window.location.href='town_square.html'">Leave Apothecary</button>
+        </div>
+    </div>
+
+    <script>
+        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        const merchantId = 'elara';
+        
+        // Apothecary ambient sounds
+        const ambientSounds = [
+            '💨 *Bubble bubble* A green potion simmers...',
+            '🌿 *Grinding* Elara crushes dried herbs...',
+            '⚗️ *Hiss* Steam escapes from a distilling flask...',
+            '🧪 *Clink* Glass vials gently touch each other...',
+            '🍃 *Rustle* Herbs are sorted on wooden shelves...',
+            '💧 *Drip drop* A mysterious liquid slowly drips...'
+        ];
+
+        function addMessage(sender, message) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender.toLowerCase().replace(' ', '-');
+            
+            if (sender === 'Merchant') {
+                messageDiv.innerHTML = `<strong>🧙‍♀️ Elara:</strong> ${message}`;
+            } else if (sender === 'Apothecary') {
+                messageDiv.innerHTML = message;
+            } else {
+                messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            }
+            
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage('You', message);
+            input.value = '';
+
+            try {
+                const response = await fetch(`/talk_to_merchant/${merchantId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        player_id: playerId,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+                addMessage('Merchant', data.response);
+                
+                // Add ambient apothecary sounds occasionally
+                if (Math.random() < 0.4) {
+                    setTimeout(() => {
+                        const randomSound = ambientSounds[Math.floor(Math.random() * ambientSounds.length)];
+                        addMessage('Apothecary', randomSound);
+                    }, 1500 + Math.random() * 2000); // Random delay between 1.5-3.5 seconds
+                }
+                
+                // Special potion brewing effect for certain keywords
+                if (message.toLowerCase().includes('potion') || message.toLowerCase().includes('brew')) {
+                    setTimeout(() => {
+                        addMessage('Apothecary', '🔮 *A nearby cauldron glows brighter as if responding to your words...*');
+                    }, 3000);
+                }
+                
+            } catch (error) {
+                addMessage('System', 'Error: ' + error.message);
+            }
+        }
+
+        // Initialize with atmospheric entry
+        window.onload = function() {
+            setTimeout(() => {
+                addMessage('System', 'You push open the heavy wooden door and step into the mystical apothecary...');
+            }, 500);
+            
+            setTimeout(() => {
+                addMessage('System', 'Shelves lined with colorful bottles and dried herbs surround you. The air hums with magical energy.');
+            }, 2000);
+            
+            setTimeout(() => {
+                addMessage('Apothecary', '🧪 *A soft voice calls from behind bubbling cauldrons*');
+            }, 3500);
+        };
+
+        // Periodic ambient sounds
+        setInterval(() => {
+            if (Math.random() < 0.3) { // 30% chance every interval
+                const randomSound = ambientSounds[Math.floor(Math.random() * ambientSounds.length)];
+                addMessage('Apothecary', randomSound);
+            }
+        }, 15000); // Every 15 seconds
+
+        // Focus input on page load
+        document.getElementById('messageInput').focus();
+    </script>
+</body>
+</html>

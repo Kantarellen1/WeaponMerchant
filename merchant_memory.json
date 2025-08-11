@@ -34,5 +34,257 @@
       "role": "merchant",
       "message": "Well now, aren't you a haggler? Alright then, let's talk numbers. The sword you're eyeing is worth a solid 50 gold coins. But since I can see the struggle in your eyes, how about this? If you manage to find another interested buyer for one of my other swords, I might just let it go for a discounted price of... oh, say 40 gold coins! Now isn't that a deal worth considering? Just remember, once you walk out of here with this beauty in your hands, there'll be no turning back. The path of the swordswoman or -man is a dangerous one, but it's always rewarding. Good luck on your quest, and may your blade never fail you!"
     }
+  ],
+  "player_29r27a62l": [
+    {
+      "role": "player",
+      "message": "Hello Gerik"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, greetings! The sun doesn't seem too hot today, or are you just used to melting under my wares? Come, come, step into my shop. I've got a fine selection of swords that'll make the local knights look like they're sharpening toothpicks. And as always, I've got the latest gossip to help you keep up with the village drama. What can I interest you in today?"
+    },
+    {
+      "role": "player",
+      "message": "Do you have any new wares you have gotten in?"
+    },
+    {
+      "role": "merchant",
+      "message": "Well, well, look who's taking an interest! Always a pleasure to see returning customers. As for new wares, I do believe I have something that might catch your eye. A shiny little number from the east - a katana. Not something we get our hands on every day, but when it's in stock, it doesn't last long. Of course, you'll need to part with quite a pretty penny for it, but then again, it's not every day one gets to wield a blade that could probably cut through butter and steel alike!\n\nBut don't just take my word for it, come give it a feel, if you dare. And while you're at it, I might have a few whispers about the latest goings-on in town. After all, a good merchant knows more than just selling weapons."
+    }
+  ],
+  "player_v3egde5at": [
+    {
+      "role": "player",
+      "message": "Hello Gerik"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, greetings, traveler! It's been a while since your last visit. Or was it just the other day? Time does fly when you're stuck in this dull town. What can I do for you today?"
+    },
+    {
+      "role": "player",
+      "message": "Do you have any new wares?"
+    },
+    {
+      "role": "merchant",
+      "message": "Indeed, my friend! Let me show you some fresh treasures to brighten up your collection or possibly your enemy's grave. Follow me if you dare, the goods are waiting."
+    },
+    {
+      "role": "player",
+      "message": "Sure thing let me see it!"
+    },
+    {
+      "role": "merchant",
+      "message": "Of course! Just follow the glimmer of gold and silver that leads to my stash. Be warned, the prices might make your wallet weep, but your gear will thank you for it. Let's proceed then?"
+    },
+    {
+      "role": "player",
+      "message": "Yes"
+    },
+    {
+      "role": "merchant",
+      "message": "Alrighty then, let's get down to business! Over yonder lies a veritable treasure trove of weapons and armor that'll make even the toughest warrior green with envy. Shall we take a gander at my finest offerings? Follow me, but remember, these wares don't come cheap!"
+    },
+    {
+      "role": "player",
+      "message": "What do you have"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, the question of the hour! Allow me to regale you with my finest creations. I've got swords that slice through shadows like a hot knife through butter, armor that protects better than a mother's love, and trinkets that could make a saint swear. Care for a closer look?"
+    },
+    {
+      "role": "player",
+      "message": "Yes show me the armor"
+    },
+    {
+      "role": "merchant",
+      "message": "Very well then! Step right up and marvel at my armor selection. Here we have an enchanted plate mail that makes you feel like a king, even if you're really just a peasant in disguise. Or perhaps you fancy something lighter? In that case, my leather jerkins offer flexibility and protection without weighing you down like a pack mule. What say you, sir/madam? Which one catches your eye?"
+    },
+    {
+      "role": "player",
+      "message": "The enchanted plate mail seems like it would be perfect"
+    },
+    {
+      "role": "merchant",
+      "message": "A splendid choice indeed! The enchanted plate mail is no mere armor, it's a fortress on flesh. It'll turn you into the unyielding shield of your comrades and leave your enemies quivering in their boots. But remember, such power doesn't come cheap. Are you prepared to part with your hard-earned coins?"
+    },
+    {
+      "role": "player",
+      "message": "Depends on the price how many gold coins for it?"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, the crux of the matter! A fair question indeed. The enchanted plate mail is a gem worthy of a king's ransom, or at least 500 gold pieces. But fear not, my dear customer, I promise you'll get your money's worth in protection and prestige. Are we haggling or ready to make a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Do you accept trades if i have some items you might be interessted in and then we find the difference?"
+    },
+    {
+      "role": "merchant",
+      "message": "Well now, aren't we a clever one! Let's see what treasures you have to offer. If your goods are worth more than this majestic armor, we can strike a bargain and avoid all that pesky gold exchange. Show me what you got!"
+    }
+  ],
+  "player_arpccc8p3": [
+    {
+      "role": "player",
+      "message": "Hello Gerik"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, the ever elusive 'Champion of the Wind'! Greetings, my dear warrior. You've returned for more iron and leather, I presume?"
+    },
+    {
+      "role": "player",
+      "message": "Yes can you show me the best plate armor you have in the store?"
+    },
+    {
+      "role": "merchant",
+      "message": "Of course, my battle-hardened friend! Let's see if we can find something that won't make you look like a turtle on parade. Follow me to the armory, if you will."
+    },
+    {
+      "role": "player",
+      "message": "Sure thing"
+    },
+    {
+      "role": "merchant",
+      "message": "Alrighty then, follow me, I've got just the right suit for your needs. Let's hope it doesn't slow you down too much!"
+    },
+    {
+      "role": "player",
+      "message": "That shouldnt be a problem"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, optimism is always a delight! Let's see if this armor can handle your enthusiasm without shattering into pieces first. Come, try it on and let's find out."
+    },
+    {
+      "role": "player",
+      "message": "sure"
+    },
+    {
+      "role": "merchant",
+      "message": "Alrighty-o, my friend! Here you go, let's hope the weight of this suit doesn't give you a newfound appreciation for gravity. Go ahead and test it out."
+    },
+    {
+      "role": "player",
+      "message": "Feels pretty good"
+    },
+    {
+      "role": "merchant",
+      "message": "That's just swell to hear! Now, let's see if it feels as good when you're in the thick of battle. Ready for a spin?"
+    },
+    {
+      "role": "player",
+      "message": "Im always ready"
+    },
+    {
+      "role": "merchant",
+      "message": "Well then, my friend! Let's see if your readiness stands up to some real-world combat. Take this sword and we'll head out for a little sparring match, shall we? Just remember, I warned you about the weight of enthusiasm."
+    }
+  ],
+  "player_jbbquqtud": [
+    {
+      "role": "player",
+      "message": "Hello Gerik any new armor"
+    },
+    {
+      "role": "merchant",
+      "message": "Hey there! Haven't seen you in a while. I don't know, did your old plate get a promotion? As for new gear, let me just check my inventory... oh wait, it's etched into my memory like a bad riddle. How about this fancy enchanted plate mail for 500 gold pieces? Or maybe you prefer something simpler, like the common iron breastplate at 20 silver?"
+    },
+    {
+      "role": "player",
+      "message": "Can i test out the enchanted plate mail out by striking it with my sword?"
+    },
+    {
+      "role": "merchant",
+      "message": "My dear customer, don't worry about testing. I guarantee that the enchanted armor will protect you as well as a cat's fur keeps its kittens warm... which is to say, very effectively. It'll cost you 500 gold pieces. Enjoy your newfound strength against swords!"
+    },
+    {
+      "role": "player",
+      "message": "can i try it on to see if it fits?"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, the age-old question of whether armor fits like a glove or a tourniquet. Alas, I'm afraid you can't try it on here, my friend. That would be like tasting food before buying it - not exactly common practice in these parts. But don't worry, I've got the perfect size for your stature. Now, shall we finalize this transaction? Or are you still debating whether you prefer being comfortable or alive?"
+    }
+  ],
+  "player_8vbbm0ffj": [
+    {
+      "role": "player",
+      "message": "Hello Gerik any new armor?"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, a question as subtle as a sledgehammer to my ears, but I'll play along. No, nothing new that's worth your coin, or life for that matter. Keep dreaming!"
+    },
+    {
+      "role": "player",
+      "message": "do you have any armor in store then?"
+    },
+    {
+      "role": "merchant",
+      "message": "Of course, dear customer. We do still have some well-used and slightly rusty relics from the last war if you fancy a trip down memory lane."
+    },
+    {
+      "role": "player",
+      "message": "What is the best you can offer me?"
+    },
+    {
+      "role": "merchant",
+      "message": "Well, let's see... My best is usually reserved for royalty or those who can afford to lose their ears. But since you seem to have both intact, I suppose I could offer you my 'Shimmering Scale Mail', a delightful relic from the last war. It'll make you look like a knight, or at least a peasant with delusions of grandeur. 20 gold pieces, if you've got it."
+    },
+    {
+      "role": "player",
+      "message": "Can i try it on to see if it fits me?"
+    },
+    {
+      "role": "merchant",
+      "message": "Alas, my dear customer, this is not a boutique where we indulge in personal fittings. But rest assured, the Shimmering Scale Mail should fit just about any average-sized adventurer. Or at least that's what I hear from all those who can barely button it up."
+    },
+    {
+      "role": "player",
+      "message": "then i wont buy it"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, well, if you don't want to grace yourself with my finest rusty relic, I suppose there are other merchants in town who might be more accommodating to your... refined taste. Farewell and better luck next time!"
+    }
+  ],
+  "player_wvh8ahcix": [
+    {
+      "role": "player",
+      "message": "Hello gerik"
+    },
+    {
+      "role": "merchant",
+      "message": "Hey there! Welcome back, friend! How's life treating you out in the wild? Been on any exciting quests lately? I've got some new gear just waiting for a good home. Come take a look!"
+    },
+    {
+      "role": "player",
+      "message": "Sure thing i was looking for a new longsword do you have anything in store?"
+    },
+    {
+      "role": "merchant",
+      "message": "Absolutely, my friend! I just crafted a beauty of a longsword last week. It's got an elegant design and a perfect balance, just right for your next adventure. Let me fetch it for you, shall I? And don't forget to ask about its interesting history too!"
+    },
+    {
+      "role": "player",
+      "message": "What is the story behind"
+    },
+    {
+      "role": "merchant",
+      "message": "This longsword here has quite a tale! It belonged to a legendary knight named Sir Eldon who once defended our town from a band of marauders. He wielded it with such skill and determination that he managed to single-handedly turn the tide of battle in our favor. After his glorious victory, he retired here and gifted this very sword to me as a token of appreciation for my services. Now, shall we give it a test swing? I'm sure you'll feel its power!"
+    },
+    {
+      "role": "player",
+      "message": "But you just said you crafted it a week ago?"
+    },
+    {
+      "role": "merchant",
+      "message": "Apologies for the confusion! You're right, I did mention that I recently crafted it. Here's the truth: The sword was actually an old one, but I restored and refined it with my expertise to make it even better. Sir Eldon's spirit must have been watching over me as I worked, because the result is a weapon worthy of a knight like him! Let's give it a try, shall we? You'll see for yourself just how incredible this sword truly is!"
+    }
   ]
 }

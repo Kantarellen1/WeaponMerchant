@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerik's Smithy - Weapons & Armor</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+        }
+        .smithy-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            min-height: 100vh;
+        }
+        .smithy-header { 
+            text-align: center; 
+            margin-bottom: 30px;
+            background: rgba(139,69,19,0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .chat-box { 
+            border: 3px solid #654321; 
+            padding: 20px; 
+            margin: 20px 0; 
+            height: 400px; 
+            overflow-y: scroll; 
+            background: rgba(255,248,220,0.95);
+            color: #333;
+            border-radius: 10px;
+        }
+        .anvil-sound { 
+            background: #ffeb3b; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            font-size: 12px; 
+            color: #333;
+            margin: 5px 0;
+        }
+        /* Rest of your styling... */
+    </style>
+</head>
+<body>
+    <div class="smithy-container">
+        <div class="smithy-header">
+            <h1>🔨 Gerik's Smithy 🔨</h1>
+            <p>*The sound of hammer on anvil echoes through the shop*</p>
+            <p>"Welcome to the finest weaponry in all of Edvin!"</p>
+        </div>
+        
+        <div class="anvil-sound">🔥 *Clang clang* The forge burns bright today... 🔥</div>
+        
+        <div class="chat-box" id="chatBox"></div>
+        
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Speak to Gerik..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">Talk</button>
+            <button onclick="window.location.href='town_square.html'">Leave Smithy</button>
+        </div>
+    </div>
+
+    <script>
+        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        const merchantId = 'gerik';
+        
+        // Smithy-specific functionality
+        function addMessage(sender, message) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender.toLowerCase();
+            
+            if (sender === 'Merchant') {
+                messageDiv.innerHTML = `<strong>🔨 Gerik:</strong> ${message}`;
+            } else {
+                messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            }
+            
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage('You', message);
+            input.value = '';
+
+            try {
+                const response = await fetch(`/talk_to_merchant/${merchantId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        player_id: playerId,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+                addMessage('Merchant', data.response);
+                
+                // Add ambient smithy sounds occasionally
+                if (Math.random() < 0.3) {
+                    setTimeout(() => {
+                        const sounds = ['*clang clang*', '*hiss of hot metal*', '*bellows whoosh*'];
+                        addMessage('Smithy', sounds[Math.floor(Math.random() * sounds.length)]);
+                    }, 2000);
+                }
+            } catch (error) {
+                addMessage('System', 'Error: ' + error.message);
+            }
+        }
+
+        // Initialize
+        addMessage('System', 'You step into the warm, smoky smithy. Gerik looks up from his anvil with a smile.');
+    </script>
+</body>
+</html>
