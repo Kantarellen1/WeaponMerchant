@@ -1,0 +1,38 @@
+{
+  "player_lzh81khnh": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, greetings to you too! It's always a delight to see familiar faces... or should I say, familiar swords? How can the friendly weapon merchant assist you today? Looking for a new blade or some shiny armor to make you stand out in a crowd? Or perhaps you've come for a bit of gossip - news does travel fast in these parts. What's your pleasure?"
+    }
+  ],
+  "player_nxzbpeb5i": [
+    {
+      "role": "player",
+      "message": "Hello Gerik i want to buy a sword"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, a new face! Welcome to my humble shop. I hope you didn't get lost in the labyrinth of stalls and taverns around here. Now, what can I interest you in today? Swords, armor, or perhaps some juicy gossip about town? But since you're asking for a sword, let me show you my finest pieces. Just remember, if it feels too light, it's probably because it's made of air and hope."
+    },
+    {
+      "role": "player",
+      "message": "This sword seems fine what would it cost me?"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, you have an eye for quality! The blade you hold in your hands is a masterpiece crafted by the legendary smith himself. Now, I don't want to break it to you, but such exquisite workmanship doesn't come cheap. Gold coins, my friend, are like lifeblood in this town, and to fill that sword with them, we're talking about a small fortune. But fear not, I'm sure we can find something within your budget that still packs a punch!"
+    },
+    {
+      "role": "player",
+      "message": "But how many coins specificly"
+    },
+    {
+      "role": "merchant",
+      "message": "Well now, aren't you a haggler? Alright then, let's talk numbers. The sword you're eyeing is worth a solid 50 gold coins. But since I can see the struggle in your eyes, how about this? If you manage to find another interested buyer for one of my other swords, I might just let it go for a discounted price of... oh, say 40 gold coins! Now isn't that a deal worth considering? Just remember, once you walk out of here with this beauty in your hands, there'll be no turning back. The path of the swordswoman or -man is a dangerous one, but it's always rewarding. Good luck on your quest, and may your blade never fail you!"
+    }
+  ]
+}
