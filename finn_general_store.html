@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Finn's General Store - Supplies & Tools</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #8B4513 0%, #CD853F 100%);
+            color: white;
+        }
+        .store-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            min-height: 100vh;
+        }
+        .store-header { 
+            text-align: center; 
+            margin-bottom: 30px;
+            background: rgba(139,69,19,0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .market-sound { 
+            background: #fff8dc; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            font-size: 12px; 
+            color: #333;
+            margin: 5px 0;
+        }
+        .chat-box { 
+            border: 3px solid #8B4513; 
+            padding: 20px; 
+            margin: 20px 0; 
+            height: 400px; 
+            overflow-y: scroll; 
+            background: rgba(255,248,220,0.95);
+            color: #333;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(139,69,19,0.3);
+        }
+        .message { 
+            margin: 10px 0; 
+            padding: 8px; 
+            border-radius: 5px; 
+        }
+        .you { 
+            color: #000080; 
+            background: #e6f3ff; 
+            border-left: 4px solid #4169E1;
+        }
+        .merchant { 
+            color: #8B4513; 
+            background: #fff8dc; 
+            font-weight: bold; 
+            border-left: 4px solid #8B4513;
+        }
+        .system { 
+            color: #666; 
+            font-style: italic; 
+            background: #f5f5f5;
+            border-left: 4px solid #999;
+        }
+        .marketplace { 
+            color: #CD853F; 
+            background: #faebd7; 
+            font-size: 12px;
+            text-align: center;
+            border: 1px dashed #8B4513;
+        }
+        .input-area { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+        input[type="text"] { 
+            flex: 1; 
+            padding: 12px; 
+            font-size: 16px; 
+            border: 3px solid #8B4513; 
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+        }
+        button { 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            background: #8B4513; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { 
+            background: #A0522D; 
+        }
+        .leave-btn {
+            background: #654321;
+        }
+        .leave-btn:hover {
+            background: #8B4513;
+        }
+    </style>
+</head>
+<body>
+    <div class="store-container">
+        <div class="store-header">
+            <h1>📦 Finn's General Store 📦</h1>
+            <p>*The bustling marketplace filled with everything an adventurer needs*</p>
+            <p>"I've got what you need, and what you didn't know you needed!"</p>
+        </div>
+        
+        <div class="market-sound">🛒 *Rustle rustle* Finn rearranges his wares... 📋</div>
+        
+        <div class="chat-box" id="chatBox"></div>
+        
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Speak to Finn..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">Talk</button>
+            <button class="leave-btn" onclick="window.location.href='town_square.html'">Leave Store</button>
+        </div>
+    </div>
+
+    <script>
+        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        const merchantId = 'finn';
+        
+        // Marketplace ambient sounds
+        const ambientSounds = [
+            '📋 *Scribble scribble* Finn updates his inventory list...',
+            '🛒 *Clatter* Tools shift as Finn organizes his shelves...',
+            '📦 *Thump* A new crate arrives from the trade routes...',
+            '🔔 *Jingle* The shop bell rings as someone passes by...',
+            '🪙 *Clink clink* Finn counts coins in his cash box...',
+            '📜 *Rustle* Trade documents flutter in the breeze...'
+        ];
+
+        function addMessage(sender, message) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender.toLowerCase().replace(' ', '-');
+            
+            if (sender === 'Merchant') {
+                messageDiv.innerHTML = `<strong>🛒 Finn:</strong> ${message}`;
+            } else if (sender === 'Marketplace') {
+                messageDiv.innerHTML = message;
+            } else {
+                messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            }
+            
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage('You', message);
+            input.value = '';
+
+            try {
+                const response = await fetch(`/talk_to_merchant/${merchantId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        player_id: playerId,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+                addMessage('Merchant', data.response);
+                
+                // Add ambient marketplace sounds occasionally
+                if (Math.random() < 0.35) {
+                    setTimeout(() => {
+                        const randomSound = ambientSounds[Math.floor(Math.random() * ambientSounds.length)];
+                        addMessage('Marketplace', randomSound);
+                    }, 1000 + Math.random() * 2500); // Random delay between 1-3.5 seconds
+                }
+                
+                // Special effect for trade/business related keywords
+                if (message.toLowerCase().includes('price') || message.toLowerCase().includes('deal') || message.toLowerCase().includes('trade')) {
+                    setTimeout(() => {
+                        addMessage('Marketplace', '💰 *Finn\'s eyes light up at the mention of business...*');
+                    }, 2500);
+                }
+                
+                // Special effect for supplies/tools keywords
+                if (message.toLowerCase().includes('rope') || message.toLowerCase().includes('tool') || message.toLowerCase().includes('supplies')) {
+                    setTimeout(() => {
+                        addMessage('Marketplace', '🔨 *Finn eagerly searches through his packed shelves...*');
+                    }, 2000);
+                }
+                
+            } catch (error) {
+                addMessage('System', 'Error: ' + error.message);
+            }
+        }
+
+        // Initialize with atmospheric entry
+        window.onload = function() {
+            setTimeout(() => {
+                addMessage('System', 'You push through the crowded marketplace and approach Finn\'s well-stocked stall...');
+            }, 500);
+            
+            setTimeout(() => {
+                addMessage('System', 'Shelves overflow with rope, tools, rations, and countless useful items. Finn looks up with a shrewd smile.');
+            }, 2000);
+            
+            setTimeout(() => {
+                addMessage('Marketplace', '📦 *A merchant\'s keen eyes size you up for potential business*');
+            }, 3500);
+        };
+
+        // Periodic ambient sounds
+        setInterval(() => {
+            if (Math.random() < 0.25) { // 25% chance every interval
+                const randomSound = ambientSounds[Math.floor(Math.random() * ambientSounds.length)];
+                addMessage('Marketplace', randomSound);
+            }
+        }, 18000); // Every 18 seconds
+
+        // Focus input on page load
+        document.getElementById('messageInput').focus();
+    </script>
+</body>
+</html>
