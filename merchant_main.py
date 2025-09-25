@@ -1,8 +1,21 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from merchant_data import get_merchant_response
+from auction_data import load_auction_listings, save_auction_listings
+from datetime import datetime, timedelta, timezone
 
 app = FastAPI()
+
+def parse_iso_datetime(dt_str):
+    # Remove duplicate timezone info if present
+    if "+00:00+00:00" in dt_str:
+        dt_str = dt_str.replace("+00:00+00:00", "+00:00")
+    if dt_str.endswith("Z"):
+        dt_str = dt_str[:-1] + "+00:00"
+    dt = datetime.fromisoformat(dt_str)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt
 
 @app.get("/")
 async def read_root():
@@ -31,6 +44,10 @@ async def elara_apothecary():
 @app.get("/general-store")
 async def finn_store():
     return FileResponse("finn_general_store.html")
+
+@app.get("/auction-house")
+async def auction_house():
+    return FileResponse("auction_house.html")
 
 # Testing purposes
 @app.post("/talk_to_merchant")
@@ -61,15 +78,24 @@ async def talk_to_merchant(request: Request):
 @app.post("/auction/list")
 async def list_item(request: Request):
     data = await request.json()
-    item = data.get("item")
-    price = data.get("price")
-    # Add item to auction house
-    return {"message": "Item listed for auction", "item": item, "price": price}
+    now = datetime.now(timezone.utc)
+    duration_hours = int(data.get("duration", 1))
+    data["time_listed"] = now.isoformat()
+    data["expires_at"] = (now + timedelta(hours=duration_hours)).isoformat()
+    listings = load_auction_listings()
+    listings.append(data)
+    save_auction_listings(listings)
+    return {"message": "Item listed!"}
 
 @app.get("/auction/browse")
 async def browse_auction():
-    # Return all current listings
-    return {"listings": []}
+    listings = load_auction_listings()
+    now = datetime.now(timezone.utc)
+    valid_listings = [
+        item for item in listings
+        if "expires_at" not in item or parse_iso_datetime(item["expires_at"]) > now
+    ]
+    return {"auction_listings": valid_listings}
 
 @app.post("/auction/buy")
 async def buy_item(request: Request):

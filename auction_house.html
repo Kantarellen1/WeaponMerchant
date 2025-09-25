@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auction House</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        .section { margin-bottom: 2em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Auction House</h1>
+
+    <div class="section">
+        <h2>List an Item</h2>
+        <form id="listForm">
+            <label>Duration:
+        <select id="duration" required>
+                    <option value="1">1 hour</option>
+                    <option value="3">3 hours</option>
+                    <option value="8">8 hours</option>
+                    <option value="24">1 day</option>
+                    <option value="72">3 days</option>
+                </select>
+            </label><br>
+            <label>Item Name: <input type="text" id="item_name" required></label><br>
+            <label>Seller ID: <input type="text" id="seller_id" required></label><br>
+            <label>Price: <input type="number" id="price" required></label><br>
+            <label>Quantity: <input type="number" id="quantity" value="1" min="1" required></label><br>
+            <button type="submit">List Item</button>
+        </form>
+        <div id="listResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Browse Listings</h2>
+        <button onclick="loadListings()">Refresh Listings</button>
+        <table id="listingsTable">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Seller</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Time Listed</th>
+                    <th>Buy</th>
+                    <th>Time Left</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="buyResult"></div>
+    </div>
+
+    <script>
+        document.getElementById('listForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const data = {
+                item_name: document.getElementById('item_name').value,
+                seller_id: document.getElementById('seller_id').value,
+                price: parseInt(document.getElementById('price').value),
+                quantity: parseInt(document.getElementById('quantity').value),
+                duration: parseInt(document.getElementById('duration').value) // <-- add this line
+            };
+            const res = await fetch('/auction/list', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            document.getElementById('listResult').innerText = result.message || 'Item listed!';
+            loadListings();
+        };
+
+        function updateTimers(listings) {
+            listings.forEach((item, idx) => {
+                const timerCell = document.getElementById(`timer-${idx}`);
+                if (!timerCell || !item.expires_at) return;
+                const expiresAt = new Date(item.expires_at);
+                const now = new Date();
+                let diff = Math.floor((expiresAt - now) / 1000); // seconds
+
+                if (diff <= 0) {
+                    timerCell.innerText = "Expired";
+                } else if (diff < 60) {
+                    timerCell.innerText = `${diff} sec`;
+                } else if (diff < 3600) {
+                    const min = Math.floor(diff / 60);
+                    const sec = diff % 60;
+                    timerCell.innerText = `${min}m ${sec}s`;
+                } else {
+                    const hr = Math.floor(diff / 3600);
+                    const min = Math.floor((diff % 3600) / 60);
+                    timerCell.innerText = `${hr}h ${min}m`;
+                }
+            });
+        }
+
+        async function loadListings() {
+            const res = await fetch('/auction/browse');
+            const data = await res.json();
+            const tbody = document.getElementById('listingsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            (data.auction_listings || []).forEach((item, idx) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.item_name}</td>
+                    <td>${item.seller_id}</td>
+                    <td>${item.price}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.time_listed}</td>
+                    <td id="timer-${idx}"></td>
+                    <td>
+                        <button onclick="buyItem(${idx})">Buy</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            // Start or update countdown timers
+            if (window.timerInterval) clearInterval(window.timerInterval);
+            updateTimers(data.auction_listings || []);
+            window.timerInterval = setInterval(() => updateTimers(data.auction_listings || []), 1000);
+        }
+
+        async function buyItem(idx) {
+            const res = await fetch('/auction/browse');
+            const data = await res.json();
+            const item = data.auction_listings[idx];
+            const buyer_id = prompt("Enter your player ID to buy:");
+            if (!buyer_id) return;
+            const buyRes = await fetch('/auction/buy', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    item_name: item.item_name,
+                    seller_id: item.seller_id,
+                    price: item.price,
+                    quantity: 1,
+                    buyer_id: buyer_id
+                })
+            });
+            const result = await buyRes.json();
+            document.getElementById('buyResult').innerText = result.message || 'Purchase complete!';
+            loadListings();
+        }
+
+        // Initial load
+        loadListings();
+    </script>
+</body>
+</html>
