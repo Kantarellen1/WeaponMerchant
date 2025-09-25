@@ -92,7 +92,7 @@
             input.value = '';
 
             try {
-                const response = await fetch(`/talk_to_merchant/${merchantId}`, {
+                const response = await fetch(`/talk_to_merchant/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

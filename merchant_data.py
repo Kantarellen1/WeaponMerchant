@@ -2,7 +2,6 @@ import json
 from prompts import build_prompt
 import subprocess
 
-# The memory file will now store conversations by player+merchant combination
 MEMORY_FILE = "merchant_memory.json"
 
 def load_memory():
@@ -17,25 +16,34 @@ def save_memory(memory):
         json.dump(memory, f, indent=2)
 
 def get_memory_key(player_id, merchant_id):
-    """Create a unique key for each player-merchant combination"""
     return f"{player_id}_{merchant_id}"
 
-def get_merchant_response(merchant_id, player_id, message):
+def get_current_merchant_id(player_location, shop_type=None):
+    # You can expand this mapping as you add more merchants/locations
+    if player_location.lower() == "edvin" and shop_type == "smithy":
+        return "gerik"
+    elif player_location.lower() == "buglia" and shop_type == "apothecary":
+        return "elara"
+    elif player_location.lower() == "edvin" and shop_type == "market":
+        return "finn"
+    # Add more logic as needed
+    else:
+        return "gerik"  # Default fallback
+
+def get_merchant_response(player_id, player_location, shop_type, message):
+    merchant_id = get_current_merchant_id(player_location, shop_type)
+    print(f"DEBUG: Using merchant_id={merchant_id} for location={player_location}, shop_type={shop_type}")
     memory = load_memory()
-    
-    # Create unique key for this player-merchant pair
     memory_key = get_memory_key(player_id, merchant_id)
     history = memory.get(memory_key, [])
 
-    # Add new message to history
     history.append({"role": "player", "message": message})
 
-    prompt = build_prompt(merchant_id, history)  # Pass merchant_id to build_prompt
+    prompt = build_prompt(merchant_id, history)
     response = run_ollama(prompt)
-    
-    # If Ollama fails, use fallback
+
     if not response:
-        response = get_fallback_response(merchant_id, message)  # Pass merchant_id to fallback
+        response = get_fallback_response(merchant_id, message)
 
     history.append({"role": "merchant", "message": response})
     memory[memory_key] = history
@@ -44,9 +52,7 @@ def get_merchant_response(merchant_id, player_id, message):
     return response
 
 def get_fallback_response(merchant_id, message):
-    """Fallback responses when Ollama isn't working - different for each merchant"""
     message_lower = message.lower()
-    
     fallbacks = {
         "gerik": {
             "greeting": "Well hello there, adventurer! Welcome to my smithy. What can I forge for you today?",
@@ -70,9 +76,7 @@ def get_fallback_response(merchant_id, message):
             "default": "I bet I've got exactly what you're looking for somewhere in this mess!"
         }
     }
-    
     merchant_responses = fallbacks.get(merchant_id, fallbacks["gerik"])
-    
     if any(word in message_lower for word in ["hello", "hi", "greetings"]):
         return merchant_responses["greeting"]
     elif any(word in message_lower for word in ["weapon", "sword", "blade"]):

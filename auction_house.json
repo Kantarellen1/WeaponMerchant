@@ -1,0 +1,11 @@
+{
+    "auction_listings": [
+        {
+            "item_name": "Longsword",
+            "seller_id": "player1",
+            "price": 45,
+            "quantity": 1,
+            "time_listed": "2025-09-25T12:00:00"
+        }
+    ]
+}

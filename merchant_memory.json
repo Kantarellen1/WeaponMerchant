@@ -286,5 +286,859 @@
       "role": "merchant",
       "message": "Apologies for the confusion! You're right, I did mention that I recently crafted it. Here's the truth: The sword was actually an old one, but I restored and refined it with my expertise to make it even better. Sir Eldon's spirit must have been watching over me as I worked, because the result is a weapon worthy of a knight like him! Let's give it a try, shall we? You'll see for yourself just how incredible this sword truly is!"
     }
+  ],
+  "player_9lzvu8n8u_gerik": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Hey there, traveler! Welcome to Edvin. How may I assist you today? Looking for new gear or curious about life around here? Let's chat and maybe find something that catches your eye!"
+    }
+  ],
+  "player_yp8ypunzb_elara": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! Welcome to my humble apothecary. What brings you here today? I have potions for healing, strength, and even magical protection if needed."
+    },
+    {
+      "role": "player",
+      "message": "I am looking for some medicine for cuts"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, cuts can be troublesome indeed. Allow me to offer a vial of QuickHeal elixir, it'll speed up the healing process and minimize scarring. Remember to clean the wound thoroughly before application. Be well on your journey!"
+    }
+  ],
+  "player_8dliw3jwv_gerik": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! Welcome to Edvin. I hope you're here for a new weapon or some armor? Let me show you around!"
+    },
+    {
+      "role": "player",
+      "message": "I want a iron sword how much would that be"
+    },
+    {
+      "role": "merchant",
+      "message": "A sturdy iron sword of my craftsmanship is quite affordable, traveler. It will set you back 50 gold pieces, and with its balance and sharp edge, it's sure to serve you well on your journey!"
+    }
+  ],
+  "player_001_gerik": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Hey there traveler! Welcome to Edvin, I'm Gerik the armorsmith. How can I help you today? Looking for a new weapon or armor maybe? Let me show you my latest creations!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, greetings again! You seem to be in need of a fine piece of equipment. Let's see if I have something that catches your eye. Care to check out my latest additions?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Hello there once more! It's great to meet you again. I've got some fresh creations that might interest you. Shall we take a look and see if something sparks your curiosity?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, hello there again! You're still exploring Edvin? Well, I must say, the perfect opportunity to acquire a top-notch weapon or armor has never been greater. Shall we dive into my latest masterpieces and see what catches your eye?"
+    },
+    {
+      "role": "player",
+      "message": ""
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Since you're still in town, I was wondering if you'd like to have a closer look at some new armors or weapons I've just crafted. Perhaps there's something among them that catches your interest? Let's take a stroll and browse together!"
+    },
+    {
+      "role": "player",
+      "message": ""
+    },
+    {
+      "role": "merchant",
+      "message": "Hey there again, adventurer! It seems we didn't get a chance to look at my latest creations. How about taking a walk through the workshop and seeing if something sparks your interest? I've got some exceptional new armors and weapons waiting for just the right person like yourself!"
+    },
+    {
+      "role": "player",
+      "message": "Do you have a sword for sale for 50 gold?"
+    },
+    {
+      "role": "merchant",
+      "message": "Oh, certainly, sir/madam! Allow me to present this finely crafted longsword. It's lightweight yet sturdy, perfect for swift and precise strikes. And the price is indeed within your range at 50 gold. Shall we take it out for a test swing?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ahoy there! You look like you could use some good company. Why don't we walk through my workshop and see if I've got something that catches your eye? There's a new armor or weapon among the recent crafts that might interest you!"
+    },
+    {
+      "role": "player",
+      "message": "Alright"
+    },
+    {
+      "role": "merchant",
+      "message": "Fantastic! Follow me, and let's have a look at the latest creations. Over here is an exquisite elven-style longbow with a smooth draw and excellent accuracy, or perhaps this enchanted warhammer that packs quite a punch would suit your needs better?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! I'm Gerik, Edvin's finest armorsmith. It's always great to see new faces in town. Let me show you around and see if there's something that catches your interest. How about trying on this shiny plate armor? It's been recently crafted with the finest materials for maximum protection. Or maybe a sleek dagger hidden within its folds would be more up your alley?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! You seem to have an air of adventure about you, friend. Let me show you some of my latest creations. Have you ever considered wielding a swift and precise short sword, or perhaps this sturdy shield that can withstand even the fiercest attacks? I'd be happy to let you try them out!"
+    },
+    {
+      "role": "player",
+      "message": "Do you have a iron sword"
+    },
+    {
+      "role": "merchant",
+      "message": "Absolutely, my friend! I do indeed have an Iron Longsword here. It's been forged with great care and balanced perfectly for a smooth swing. Why don't you give it a test?"
+    },
+    {
+      "role": "player",
+      "message": "Nice can i try it"
+    },
+    {
+      "role": "merchant",
+      "message": "Of course! Please come to the counter where we can ensure a proper fit and balance for your safety. The Iron Longsword has a unique weight and feel that I believe you will appreciate. Let's see if it suits your needs on this grand adventure."
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again, traveler! You seem intrigued by my wares. Perhaps I can interest you in testing our Iron Longsword? It's a fine blade, well-balanced and ready for your next journey. Let's find the perfect fit for you at the counter. Shall we get started?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! I have something special that might catch your eye - our Iron Longsword, carefully crafted and balanced for a smooth swing. Care to give it a try over here at the counter? It's just waiting for an adventurer like you to take it on a grand journey!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! I have a fine Iron Longsword that might interest you - well-balanced and ready for your next adventure. Shall we find the perfect fit for you at the counter? It's just waiting to accompany you on your journey!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more, traveler! The Iron Longsword is indeed a marvel \u00e2\u20ac\u201c crafted with care and balance for a smooth swing. Care to try it out here at the counter? It's just waiting for an adventurer like you to take it on your next grand journey!"
+    },
+    {
+      "role": "player",
+      "message": "Do you have a iron sword for sale?"
+    },
+    {
+      "role": "merchant",
+      "message": "Absolutely, I do! The Iron Longsword is currently available. It's meticulously crafted and balanced for a smooth swing. Care to give it a try over here at the counter? I think you'll find it perfect for your next adventure!"
+    },
+    {
+      "role": "player",
+      "message": "Do you have a iron sword for sale?"
+    },
+    {
+      "role": "merchant",
+      "message": "Indeed, I do! Here's my Iron Longsword for you - well-balanced and ready for your next adventure. Shall we find the perfect fit for you at the counter? It's waiting to accompany you on your journey!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again, traveler! Welcome back to my humble forge. I see you're looking around. Perhaps you might be interested in trying out the Iron Longsword I have here? A well-balanced weapon perfect for your next adventure!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Good day, traveler! It seems like you've returned for another adventure. I invite you to take a look at my latest creation - the Iron Longsword, carefully crafted and balanced for an enjoyable swing. Would you care to give it a try? Let us find the perfect fit for you at the counter!"
+    },
+    {
+      "role": "player",
+      "message": "do you have a sword for sale?"
+    },
+    {
+      "role": "merchant",
+      "message": "Indeed, I do! Allow me to present my Iron Longsword - a fine balance and an excellent choice for your next adventure. It's waiting for you at the counter if you'd like to take it for a spin!"
+    },
+    {
+      "role": "player",
+      "message": "Okay i will have a look, how much is it?"
+    },
+    {
+      "role": "merchant",
+      "message": "Delighted to hear that, traveler! The Iron Longsword is priced reasonably for its quality. You can find it at the counter, and I'm more than happy to discuss payment terms or negotiate a deal if needed! Let me know when you're ready to try it out."
+    },
+    {
+      "role": "player",
+      "message": "Fine what is the payment going to be?"
+    },
+    {
+      "role": "merchant",
+      "message": "The Iron Longsword can be yours for 50 gold pieces, traveler. I offer flexible payment plans as well, so feel free to discuss your options with me once you're ready! Let's make this purchase a pleasant experience for both of us. Don't forget to try it out and see how well-balanced it is!"
+    },
+    {
+      "role": "player",
+      "message": "Alright ill take it"
+    },
+    {
+      "role": "merchant",
+      "message": "Marvelous choice, adventurer! The Iron Longsword will serve you admirably on your journey. I can also help you with a suitable sheath for protection and easy carrying. Now, let's discuss the payment details. Since we're friends here, I'll offer an attractive deal of 48 gold pieces if you pay in full today. If you prefer a flexible payment plan, that option is still available as well! Let me know what suits you best, and remember to test the weapon again before we finalize the sale. Good luck on your adventure!"
+    },
+    {
+      "role": "player",
+      "message": "Yeah thanks for the deal"
+    },
+    {
+      "role": "merchant",
+      "message": "My pleasure, traveler! I'll wrap up the Iron Longsword with its matching sheath for protection. You can find it at the counter with your invoice. As promised, here's a 2 gold piece discount if you pay in full today. Don't hesitate to return if you ever need repairs or other equipment for your adventures! Good luck and safe travels!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, greetings traveler! I hope the Iron Longsword serves you well on your journey. Swing by anytime you need assistance with repairs or new equipment! Perhaps we can share stories over a warm drink while discussing my latest creations?"
+    },
+    {
+      "role": "player",
+      "message": "Yeah sure"
+    },
+    {
+      "role": "merchant",
+      "message": "Splendid, traveler! Let's grab a seat near the fireplace then. I'll offer you a steaming mug of ale and we can discuss some of my recent craftsmanship. I have a new set of enchanted plate armor that might interest you as well, if your current gear ever needs an upgrade. Happy to answer any questions or share stories about Edvin!"
+    },
+    {
+      "role": "player",
+      "message": "Yeah sure"
+    },
+    {
+      "role": "merchant",
+      "message": "Delighted to hear that, traveler! Sit down and let's warm up with some ale while I share tales of Edvin and show you the enchanted plate armor. It'll provide superior protection for your adventures, and it might just become your new favorite piece of gear. Curious to know if it catches your eye?"
+    },
+    {
+      "role": "player",
+      "message": "Hello Gerik, Do you have a shield?"
+    },
+    {
+      "role": "merchant",
+      "message": "Of course! I do have several shield options to complement that enchanted plate armor. Let's take a look, shall we? I recently crafted one with reinforced leather and an etched crest for added style and protection. It pairs beautifully with the armor and would offer additional security on your quests. Interested?"
+    },
+    {
+      "role": "player",
+      "message": "Nice how much for the enchanted one?"
+    },
+    {
+      "role": "merchant",
+      "message": "The enchanted plate armor is priced just right, traveler! It's an investment in your safety, crafted with care and imbued with powerful magic. Let's discuss the details further if you're interested. Would 50 gold seem reasonable for such exceptional protection? But, of course, I'm willing to negotiate to ensure it fits within your budget. How does that sound?"
+    },
+    {
+      "role": "player",
+      "message": "Hello Gerik"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again, traveler! Welcome back to my humble shop. I see you're keen on protecting yourself. Well, you've certainly come to the right place for that. I do have a shield ready, with an enchanted one available as well, should you prefer something even more extraordinary. Shall we take a look?"
+    },
+    {
+      "role": "player",
+      "message": "Do you have a bow?"
+    },
+    {
+      "role": "merchant",
+      "message": "Indeed! A good bow can be quite essential on your journeys. I do have a finely crafted longbow with yew wood and a string made from the silken thread of spiders that have been fed a diet of rare fruits. It's both durable and powerful, ideal for taking down game or fending off dangerous creatures. Would you like to try it out?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, hello there! You seemed intrigued by my offerings earlier. If I may be so bold, have you considered arming yourself with a short sword for those close-combat situations? It's an elegant weapon that I've imbued with enchantments to increase its striking power and balance. Let's see if it suits your needs!"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more, my friend! Seems you're eager for a weapon fit for your next adventure. I've just the thing\u00e2\u20ac\u201da sturdy battle-axe crafted from the finest steel, sharpened to perfection and enchanted to return to you upon its release. Would that be of interest?"
+    },
+    {
+      "role": "player",
+      "message": "How much for a shield?"
+    },
+    {
+      "role": "merchant",
+      "message": "A fine choice indeed! I have a shield made from layers of oak and reinforced with iron bands for added protection. It's also magically enchanted to deflect projectiles with greater accuracy. The cost might be steep, but the investment in your safety is worth it. Would you care to see it?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I trust you've had a good day. I happened to have an exquisite longbow here that I believe would cater perfectly for ranged attacks. It's crafted from yew wood, making it lightweight yet powerful, and imbued with enchantments that grant superior accuracy and speed. Shall we take a closer look?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, greetings again! You seem to be in the market for some gear. I've got just the thing - a protective shield woven from layers of leather and reinforced with brass bands. It might not have magical enchantments, but it will surely guard you well in battle. Interested?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! I have a marvelous suit of plate armor that's sure to turn heads on the battlefield. Crafted from high-grade steel, this armour provides unparalleled protection while allowing agility and flexibility. It also features intricate engravings and a touch of magic for good measure. Care to take a peek?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! I've got another item that would be perfect for your journey - a finely crafted elven short sword, balanced with precision and sharpened to an edge that's lethal yet silent. The blade is imbued with enchantments for increased strength and swiftness in combat. Fancy giving it a try?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! I have a unique piece of equipment I believe you'll find intriguing - a handcrafted longbow made from yewwood, renowned for its durability and strength. The strings are reinforced with strong sinew, ensuring the arrow flights true every time. It even comes with a quiver full of arrows imbued with magic for enhanced penetration. Shall we give it a test?"
+    },
+    {
+      "role": "player",
+      "message": "How are you"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings there! I'm doing splendid, thanks for asking. Let me show you something truly special - a powerful warhammer, hand-forged and balanced to perfection. It delivers devastating blows while still being light enough for agile maneuvers. Care to give it a whirl?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Ahoy there! I've just the thing to catch your interest - a magnificent plate armor, custom-made and designed for optimal protection, yet lightweight enough for swift movement. It's adorned with intricate engravings that not only make it visually stunning but also provide an element of defense against magical attacks. Ready for a trial run?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! I have a rare shield made from dragonhide, offering exceptional protection and unmatched durability. The artisanal design ensures perfect balance for defensive maneuvers. Care to take it for a spin?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Good day once more! I've been busy assembling an exquisite set of armor, crafted with the finest materials and painstakingly designed for the utmost protection and agility. This full suit includes a helm, cuirass, greaves, and gauntlets - all adorned with intricate engravings that not only make it visually striking but also offer magical defense. How about trying it on and seeing if it's the perfect fit for you?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! I've been working on a masterpiece - a longsword imbued with a powerful enchantment that increases its damage output in battle. Swing it, feel its balance, and hear the ethereal hum of magic as you hold it. Are you ready to upgrade your arsenal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! I've just completed a unique bow with enchanted strings that enhance accuracy in long-range combat. Give it a draw and witness the precision it delivers. A perfect addition to any archer's quiver, don't you think?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! I've got something special for you - a shield enchanted with protective magic that can deflect enemy attacks and absorb damage. Give it a test, and let the peace of mind in battle wash over you. Are you ready to make your defense unyielding?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I've crafted a magnificent armor, meticulously woven with protective enchantments for unparalleled resilience in battle. Try it on and feel the strength it grants you. A true armor fit for the bravest of warriors, what do you say?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! Today I've forged a sword imbued with a fiery spirit, granting extra damage against magical foes. Give it a swing and experience its might in combat. Are you ready to claim victory with every strike?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I've crafted an enchanted longbow that will launch arrows with precision, making even the toughest targets crumble before you. Nock an arrow and unleash your true archery potential. Ready to claim victory from afar?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! Today I've created a shield, not just for defense but also offense - it can deflect spells and stun enemies when hit. Swing it around and witness its power firsthand. Imagine the advantage you'll have on the battlefield with this shield at your side. Shall we discuss a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again, traveler! Today I present to you an armor forged from the finest materials and enchanted for superior protection. Slip it on and feel its comfort as well as its strength against any enemy attack. Imagine yourself standing tall amidst battle with this armor protecting you. Shall we discuss a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, once more! Today I've crafted an extraordinary steel helm, designed for both protection and agility. Try it on and experience its lightweight yet robust feel. With this helmet, you'll dominate the battlefield with unmatched speed and resilience. Shall we negotiate a fair deal?"
+    },
+    {
+      "role": "player",
+      "message": "I am looking for a sword"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, splendid choice! I have a blade here that's perfect for your needs - sharp as a hawk's talon yet balanced like a dancer's step. Test its edge and feel the precision it offers in combat. With this sword by your side, victory will be yours to claim. Shall we discuss its acquisition?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! I have just the weapon for you. A masterfully crafted longbow with strings that sing as they release arrows with unerring accuracy. Feel the power in your hands and the precision on the target. With this bow at your side, every foe will tremble before you. Shall we discuss a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! Today I've crafted a magnificent shield fit for a champion. Its sturdy design offers unwavering protection while its lightweight structure ensures swift maneuvers on the battlefield. Take it in your hands and feel the strength it brings. With this shield, no enemy will stand a chance against you. Shall we negotiate a fair trade?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I've forged an armored jacket of unparalleled quality, woven with the finest materials for optimal protection and mobility. Slip it on and feel its comfort as you conquer the toughest battles. With this armor, victory will be yours to claim. Shall we settle upon a price?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I've crafted a pair of enchanted boots that grant extraordinary speed and agility on your adventures. Try them on and feel the rush as you outmaneuver any danger that comes your way. With these boots, no obstacle will be too great for you to overcome. Shall we agree upon a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I've fashioned an exquisite sword of legendary proportions. Its sharp edge cuts through the thickest armor, while its well-balanced design ensures precision in every strike. Test it here and feel its power. With this weapon, you will bring glory to Edvin and conquer any challenge that lies ahead. Let's discuss terms for your acquisition."
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! Today I've crafted a masterpiece - an unyielding shield imbued with the spirit of resilience. It will protect you in even the most treacherous battles. Come try it out and feel its strength. This shield is your fortress, your beacon of hope in the darkest of times. How does that sound for a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I present to you an armored vest imbued with enchanted runes, providing extraordinary protection and agility on your journeys. Slip it on and feel its power shielding you from harm while allowing unparalleled mobility. With this armor, no danger can touch you. Shall we agree upon a deal?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I've created a set of magical boots that grant swift and silent movement to the wearer. They are perfect for those who prefer stealth or need to cover vast distances quickly. Give them a try and feel their power beneath your feet. With these boots, you will move like a ghost in the night or a lightning bolt across the plains. Let's discuss terms for your purchase."
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I showcase a mighty two-handed sword, crafted with precision and enchanted for maximum power. Feel its balance in your hands and know that it will cleave through any obstacle. This sword is not just a weapon, but a symbol of strength and triumph. Are we ready to discuss terms for this magnificent piece?"
+    },
+    {
+      "role": "player",
+      "message": "Can i have a closer look at that?"
+    },
+    {
+      "role": "merchant",
+      "message": "Of course! Please approach the display case where the magical two-handed sword awaits. I'll unlock it so you can take a closer look and test its balance. This weapon is more than just an instrument of destruction; it is a symbol of your might and determination on the battlefield. Let me know if you have any questions or need assistance with anything else."
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! Today, I present to you a set of enchanted leather armor that will provide incredible protection while maintaining flexibility for quick maneuvers. This armor is lightweight yet sturdy, perfect for those who seek both safety and agility on their adventures. Would you like to try it on and feel its durability for yourself?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I've got just the thing for you - a beautifully crafted set of elven-made plate mail armor, enchanted with defensive magic for ultimate protection. The light weight makes it perfect for those seeking both durability and mobility on their journeys. How about trying it on and experiencing its strength firsthand?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I'd be delighted to introduce our finest craft - a magical longbow that shoots arrows with unparalleled precision. Its power is amplified by enchantments, making every shot count on the battlefield. Would you like to take a closer look or have any questions about this exceptional piece?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! Today I'd like to showcase our town's pride - a rare gem-studded broadsword, meticulously crafted for those who seek power and elegance. Its enchanted edge ensures every strike is lethal, while the balance guarantees effortless control in combat. Would you be interested in giving it a spin?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! As you continue your journey, I'd like to present our town's masterpiece - a shield adorned with intricate designs and reinforced for unwavering protection. The enchantments make it an invaluable asset on the battlefield, deflecting blows and absorbing damage. Care to give it a test run?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! I've got something special for you today - our town's latest creation: a lightweight yet sturdy breastplate infused with protective enchantments, ensuring your safety even in the most perilous situations. Would you like to try it on and feel the difference?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I have just the right thing for you - a versatile longbow handcrafted by our skilled artisans, designed for precision and power. Its enchanted strings will ensure every arrow finds its mark, making you an unstoppable force in battle. Ready to give it a try?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today, I'd like to introduce our town's newest weapon - a sword imbued with enchantments for extraordinary power and balance. Its sharp edge will cut through anything in its path, while its lightweight design ensures effortless maneuverability. Shall we give it a spin?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings once more! Today I'd like to share with you our latest creation - a shield, masterfully crafted for protection and agility. Its enchanted surface will deflect incoming attacks, while its lightweight design ensures swift response in battle. Care to give it a try?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! How about a suit of armor tailored to your needs? It's made from the finest materials, designed for maximum protection and flexibility. The enchanted joints ensure swift movement while reducing fatigue. Shall we fit it on you?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I've just received a shipment of magical armor imbued with the essence of ancient warriors, providing unparalleled strength and resilience. It's customizable to your size, offering perfect fit and comfort. Would you like to see it in action?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I have a remarkable sword here, forged from the heart of a fallen star. Its unique properties grant extraordinary power and precision. Care to test its balance?"
+    },
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings again! Have you considered my latest creation - a shield adorned with the scales of dragons, offering unmatched defense against fire and magical attacks? It's lightweight yet incredibly durable. Fancy a peek?"
+    }
+  ],
+  "player_my5ds66qz_gerik": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! Welcome to Gerik's Forge, the best place for fine weapons and armor. How may I assist you on your journey today?"
+    },
+    {
+      "role": "player",
+      "message": "Do you have a longsword for sale and how much is it?"
+    },
+    {
+      "role": "merchant",
+      "message": "Indeed, I do! A splendid longsword crafted with precision and care here at Gerik's Forge. It's priced at 55 gold pieces, a small price to pay for such exceptional quality! Would you like to give it a try?"
+    },
+    {
+      "role": "player",
+      "message": "i will come back tommorow and look for it"
+    },
+    {
+      "role": "merchant",
+      "message": "Delightful! I eagerly await your return tomorrow. Remember, testing is encouraged but please take care not to damage the weapon. I'll have it ready and waiting for you then. Safe travels!"
+    }
+  ],
+  "player_lmyil84n1_gerik": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! Welcome to Gerik's Forge, where quality meets adventure! Feeling for a new weapon or armor? Go ahead, give them a test swing or try on the fit."
+    },
+    {
+      "role": "player",
+      "message": "Do you have a longsword for sale and what is the price?"
+    },
+    {
+      "role": "merchant",
+      "message": "Absolutely, I do! A finely crafted longsword, just right for you. It's priced at 55 gold. Give it a try and let me know how you like it!"
+    }
+  ],
+  "player_q015fupx1_gerik": [
+    {
+      "role": "player",
+      "message": "Hello do you have a longsword for sale and what is the price?"
+    },
+    {
+      "role": "merchant",
+      "message": "Hello there! Indeed, I do have a Longsword available. It's 55 gold pieces, an excellent choice for any warrior! Feel free to test its balance, but please remember not to damage it."
+    }
+  ],
+  "player_f5xq8i98g_gerik": [
+    {
+      "role": "player",
+      "message": "Hello do you have a longsword for sale and what is the price?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! Indeed, I have a fine longsword right here. Priced at 60 gold pieces, it's a bargain for such an exceptional blade. Would you like to give it a try?"
+    }
+  ],
+  "player_oow5iafyp_gerik": [
+    {
+      "role": "player",
+      "message": "Hello do you have a longsword for sale and what is the price?"
+    },
+    {
+      "role": "merchant",
+      "message": "Absolutely! I do have a Longsword here, finely crafted and ready for battle. It costs 60 gold pieces. Would you like to give it a test swing? Let's make sure it feels right before we wrap up a deal!"
+    }
+  ],
+  "player_xv15l61zn_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! While I don't sell potions here in Edvin, there's a wise herbalist named Marla who might have just what you need. You can find her just down the street at the end of Market Square. Enjoy your visit!"
+    },
+    {
+      "role": "player",
+      "message": "but i am in buglia"
+    },
+    {
+      "role": "merchant",
+      "message": "Ah, my apologies for the confusion! While I don't sell potions here either, perhaps you can ask around town or check with one of our local alchemists to find what you need. Enjoy your stay in Buglia!"
+    }
+  ],
+  "player_0qw5olg9k_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings traveler! Alas, I'm afraid I don't deal in potions here at my humble smithy. But Edvin's apothecary, just down the road, should have what you seek. Perhaps we can discuss some fine weapons or armor instead?"
+    }
+  ],
+  "player_v9qufnlvy_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! I'm afraid I don't deal in potions here at my forge, but the apothecary down the street should have what you need. Just ask for Gilda, she's quite knowledgeable!"
+    }
+  ],
+  "player_w1pau7tih_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Hey there, traveler! I don't sell potions here, but there's a healer in the next town over. But if you're looking for weapons and armor, I've got quite a selection! Let me show you around."
+    }
+  ],
+  "player_hwj3b2tio_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healin potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings! I'm afraid as a weaponsmith, I don't sell healing potions here in Edvin. You might want to visit the apothecary down the street - they have a fine selection!"
+    }
+  ],
+  "player_vhsqnshky_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings there, traveler! I'm afraid as a weapon and armorsmith, I don't carry healing potions. However, the apothecary just down the street should have what you need. Be sure to ask for Edwin - he's made many a hero healthier with his concoctions!"
+    }
+  ],
+  "player_y6vuo8egs_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! As much as I'd love to help, I'm afraid I don't sell those here. You might want to visit the apothecary nearby for your needs. But remember, my crafts are second to none in Edvin!"
+    }
+  ],
+  "player_jwod6hdhg_gerik": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion?"
+    },
+    {
+      "role": "merchant",
+      "message": "Hello there! I'm afraid I don't sell healing potions here at the armory, but my apothecary friend down the street should have some. Let me give you a direction, and perhaps we can discuss a fine weapon or armor instead?"
+    }
+  ],
+  "player_ptogsf2nu_elara": [
+    {
+      "role": "player",
+      "message": "Hello how much for a healing potion"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! A Healing Potion is 33 gold. It's beneficial when you're wounded or fatigued. But remember, it should be used wisely and only as needed. Would you like to purchase one?"
+    }
+  ],
+  "player_p8w91az2u_finn": [
+    {
+      "role": "player",
+      "message": "Hello"
+    },
+    {
+      "role": "merchant",
+      "message": "Greetings, traveler! Welcome to my humble abode of useful goods. I've got just what you need for your journey ahead. Rope, rations, lanterns, and more. What can I assist you with today?"
+    }
   ]
 }
