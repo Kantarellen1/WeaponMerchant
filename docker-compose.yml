@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  weapon-merchant:
+    build: .
+    container_name: weapon-merchant
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./character:/app/character
+      - ./merchants:/app/merchants
+      - ./auction_house:/app/auction_house
+      - ./static:/app/static
+      - ./lore:/app/lore
+      - ./guilds:/app/guilds
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - weapon-merchant-network
+
+networks:
+  weapon-merchant-network:
+    driver: bridge
