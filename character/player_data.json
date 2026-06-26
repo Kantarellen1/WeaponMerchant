@@ -1,0 +1,42 @@
+{
+  "TestBruger": {
+    "first_class": {
+      "name": "Mage",
+      "level": 1,
+      "skills": []
+    },
+    "second_class": null,
+    "hybrid_class": null,
+    "professions": []
+  },
+  "Kasper": {
+    "first_class": {
+      "name": "Druid",
+      "level": 1,
+      "skills": []
+    },
+    "second_class": null,
+    "hybrid_class": null,
+    "professions": []
+  },
+  "MartiniPapi": {
+    "first_class": {
+      "name": "Warrior",
+      "level": 1,
+      "skills": []
+    },
+    "second_class": null,
+    "hybrid_class": null,
+    "professions": []
+  },
+  "Hola": {
+    "first_class": {
+      "name": "Paladin",
+      "level": 1,
+      "skills": []
+    },
+    "second_class": null,
+    "hybrid_class": null,
+    "professions": []
+  }
+}

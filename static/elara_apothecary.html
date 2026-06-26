@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Finn's General Store - Supplies & Tools</title>
+    <title>Elara's Apothecary - Potions & Herbs</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
             margin: 0; 
-            background: linear-gradient(135deg, #8B4513 0%, #CD853F 100%);
+            background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%);
             color: white;
         }
-        .store-container { 
+        .apothecary-container { 
             max-width: 800px; 
             margin: 0 auto; 
             padding: 20px;
             background: rgba(0,0,0,0.3);
             min-height: 100vh;
         }
-        .store-header { 
+        .apothecary-header { 
             text-align: center; 
             margin-bottom: 30px;
-            background: rgba(139,69,19,0.8);
+            background: rgba(46,139,87,0.8);
             padding: 20px;
             border-radius: 10px;
         }
-        .market-sound { 
-            background: #fff8dc; 
+        .bubble-sound { 
+            background: #e1f5fe; 
             padding: 5px 10px; 
             border-radius: 5px; 
             font-size: 12px; 
@@ -32,15 +32,15 @@
             margin: 5px 0;
         }
         .chat-box { 
-            border: 3px solid #8B4513; 
+            border: 3px solid #228B22; 
             padding: 20px; 
             margin: 20px 0; 
             height: 400px; 
             overflow-y: scroll; 
-            background: rgba(255,248,220,0.95);
+            background: rgba(240,248,255,0.95);
             color: #333;
             border-radius: 10px;
-            box-shadow: inset 0 0 10px rgba(139,69,19,0.3);
+            box-shadow: inset 0 0 10px rgba(46,139,87,0.3);
         }
         .message { 
             margin: 10px 0; 
@@ -53,10 +53,10 @@
             border-left: 4px solid #4169E1;
         }
         .merchant { 
-            color: #8B4513; 
-            background: #fff8dc; 
+            color: #2E8B57; 
+            background: #f0fff0; 
             font-weight: bold; 
-            border-left: 4px solid #8B4513;
+            border-left: 4px solid #2E8B57;
         }
         .system { 
             color: #666; 
@@ -64,12 +64,12 @@
             background: #f5f5f5;
             border-left: 4px solid #999;
         }
-        .marketplace { 
-            color: #CD853F; 
-            background: #faebd7; 
+        .apothecary { 
+            color: #8B4513; 
+            background: #fff8dc; 
             font-size: 12px;
             text-align: center;
-            border: 1px dashed #8B4513;
+            border: 1px dashed #2E8B57;
         }
         .input-area { 
             display: flex; 
@@ -80,14 +80,14 @@
             flex: 1; 
             padding: 12px; 
             font-size: 16px; 
-            border: 3px solid #8B4513; 
+            border: 3px solid #228B22; 
             border-radius: 8px;
             background: rgba(255,255,255,0.9);
         }
         button { 
             padding: 12px 20px; 
             font-size: 16px; 
-            background: #8B4513; 
+            background: #228B22; 
             color: white; 
             border: none; 
             border-radius: 8px; 
@@ -95,47 +95,47 @@
             transition: background 0.3s;
         }
         button:hover { 
-            background: #A0522D; 
+            background: #32CD32; 
         }
         .leave-btn {
-            background: #654321;
+            background: #8B4513;
         }
         .leave-btn:hover {
-            background: #8B4513;
+            background: #A0522D;
         }
     </style>
 </head>
 <body>
-    <div class="store-container">
-        <div class="store-header">
-            <h1>📦 Finn's General Store 📦</h1>
-            <p>*The bustling marketplace filled with everything an adventurer needs*</p>
-            <p>"I've got what you need, and what you didn't know you needed!"</p>
+    <div class="apothecary-container">
+        <div class="apothecary-header">
+            <h1>🧪 Elara's Apothecary 🧪</h1>
+            <p>*The air is thick with the scent of herbs and bubbling potions*</p>
+            <p>"Knowledge and healing, in equal measure..."</p>
         </div>
         
-        <div class="market-sound">🛒 *Rustle rustle* Finn rearranges his wares... 📋</div>
+        <div class="bubble-sound">💨 *Bubble bubble* The cauldrons never rest... 🌿</div>
         
         <div class="chat-box" id="chatBox"></div>
         
         <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Speak to Finn..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <input type="text" id="messageInput" placeholder="Speak to Elara..." onkeypress="if(event.key==='Enter') sendMessage()">
             <button onclick="sendMessage()">Talk</button>
-            <button class="leave-btn" onclick="window.location.href='town_square.html'">Leave Store</button>
+            <button class="leave-btn" onclick="window.location.href='town_square.html'">Leave Apothecary</button>
         </div>
     </div>
 
     <script>
         let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
-        const merchantId = 'finn';
+        const merchantId = 'elara';
         
-        // Marketplace ambient sounds
+        // Apothecary ambient sounds
         const ambientSounds = [
-            '📋 *Scribble scribble* Finn updates his inventory list...',
-            '🛒 *Clatter* Tools shift as Finn organizes his shelves...',
-            '📦 *Thump* A new crate arrives from the trade routes...',
-            '🔔 *Jingle* The shop bell rings as someone passes by...',
-            '🪙 *Clink clink* Finn counts coins in his cash box...',
-            '📜 *Rustle* Trade documents flutter in the breeze...'
+            '💨 *Bubble bubble* A green potion simmers...',
+            '🌿 *Grinding* Elara crushes dried herbs...',
+            '⚗️ *Hiss* Steam escapes from a distilling flask...',
+            '🧪 *Clink* Glass vials gently touch each other...',
+            '🍃 *Rustle* Herbs are sorted on wooden shelves...',
+            '💧 *Drip drop* A mysterious liquid slowly drips...'
         ];
 
         function addMessage(sender, message) {
@@ -144,8 +144,8 @@
             messageDiv.className = 'message ' + sender.toLowerCase().replace(' ', '-');
             
             if (sender === 'Merchant') {
-                messageDiv.innerHTML = `<strong>🛒 Finn:</strong> ${message}`;
-            } else if (sender === 'Marketplace') {
+                messageDiv.innerHTML = `<strong>🧙‍♀️ Elara:</strong> ${message}`;
+            } else if (sender === 'Apothecary') {
                 messageDiv.innerHTML = message;
             } else {
                 messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
@@ -164,38 +164,33 @@
             input.value = '';
 
             try {
-                const response = await fetch(`/talk_to_merchant/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                const response = await fetch("/talk_to_merchant", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        player_id: playerId,
-                        message: message
+                        player_id: "your_player_id",
+                        message: message, // Use the actual message!
+                        player_location: "Buglia",
+                        shop_type: "apothecary"
                     })
                 });
-
+                
                 const data = await response.json();
                 addMessage('Merchant', data.response);
                 
-                // Add ambient marketplace sounds occasionally
-                if (Math.random() < 0.35) {
+                // Add ambient apothecary sounds occasionally
+                if (Math.random() < 0.4) {
                     setTimeout(() => {
                         const randomSound = ambientSounds[Math.floor(Math.random() * ambientSounds.length)];
-                        addMessage('Marketplace', randomSound);
-                    }, 1000 + Math.random() * 2500); // Random delay between 1-3.5 seconds
+                        addMessage('Apothecary', randomSound);
+                    }, 1500 + Math.random() * 2000); // Random delay between 1.5-3.5 seconds
                 }
                 
-                // Special effect for trade/business related keywords
-                if (message.toLowerCase().includes('price') || message.toLowerCase().includes('deal') || message.toLowerCase().includes('trade')) {
+                // Special potion brewing effect for certain keywords
+                if (message.toLowerCase().includes('potion') || message.toLowerCase().includes('brew')) {
                     setTimeout(() => {
-                        addMessage('Marketplace', '💰 *Finn\'s eyes light up at the mention of business...*');
-                    }, 2500);
-                }
-                
-                // Special effect for supplies/tools keywords
-                if (message.toLowerCase().includes('rope') || message.toLowerCase().includes('tool') || message.toLowerCase().includes('supplies')) {
-                    setTimeout(() => {
-                        addMessage('Marketplace', '🔨 *Finn eagerly searches through his packed shelves...*');
-                    }, 2000);
+                        addMessage('Apothecary', '🔮 *A nearby cauldron glows brighter as if responding to your words...*');
+                    }, 3000);
                 }
                 
             } catch (error) {
@@ -206,25 +201,25 @@
         // Initialize with atmospheric entry
         window.onload = function() {
             setTimeout(() => {
-                addMessage('System', 'You push through the crowded marketplace and approach Finn\'s well-stocked stall...');
+                addMessage('System', 'You push open the heavy wooden door and step into the mystical apothecary...');
             }, 500);
             
             setTimeout(() => {
-                addMessage('System', 'Shelves overflow with rope, tools, rations, and countless useful items. Finn looks up with a shrewd smile.');
+                addMessage('System', 'Shelves lined with colorful bottles and dried herbs surround you. The air hums with magical energy.');
             }, 2000);
             
             setTimeout(() => {
-                addMessage('Marketplace', '📦 *A merchant\'s keen eyes size you up for potential business*');
+                addMessage('Apothecary', '🧪 *A soft voice calls from behind bubbling cauldrons*');
             }, 3500);
         };
 
         // Periodic ambient sounds
         setInterval(() => {
-            if (Math.random() < 0.25) { // 25% chance every interval
+            if (Math.random() < 0.3) { // 30% chance every interval
                 const randomSound = ambientSounds[Math.floor(Math.random() * ambientSounds.length)];
-                addMessage('Marketplace', randomSound);
+                addMessage('Apothecary', randomSound);
             }
-        }, 18000); // Every 18 seconds
+        }, 15000); // Every 15 seconds
 
         // Focus input on page load
         document.getElementById('messageInput').focus();

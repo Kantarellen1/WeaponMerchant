@@ -92,18 +92,21 @@
             input.value = '';
 
             try {
-                const response = await fetch(`/talk_to_merchant/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                const response = await fetch("/talk_to_merchant", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        player_id: playerId,
-                        message: message
+                        player_id: "your_player_id",
+                        message: message,
+                        player_location: "Edvin",
+                        shop_type: "smithy"
                     })
                 });
 
                 const data = await response.json();
+                // Display the merchant's reply in the chat box
                 addMessage('Merchant', data.response);
-                
+
                 // Add ambient smithy sounds occasionally
                 if (Math.random() < 0.3) {
                     setTimeout(() => {

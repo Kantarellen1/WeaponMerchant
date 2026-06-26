@@ -1,10 +1,56 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
-from merchant_data import get_merchant_response
-from auction_data import load_auction_listings, save_auction_listings
+from merchants.merchant_data import (
+    get_merchant_response,
+    get_merchant_response_by_id,
+    save_memory,
+    load_memory,
+    get_memory_key,
+    build_prompt,
+    run_ollama,
+    get_fallback_response,
+)
+from auction_house.auction_data import load_auction_listings, save_auction_listings
 from datetime import datetime, timedelta, timezone
+import json
+from character.main_class_data import create_player
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+MINIMUM_PRICES = {
+    "Longsword": 40,
+    "Shortsword": 25,
+    "Battle Axe": 45,
+    "Dagger": 10,
+    "Wooden Shield": 15,
+    "Iron Shield": 30,
+    "Leather Armor": 20,
+    "Chainmail": 60,
+    "Plate Armor": 120,
+    "Healing potion": 20,
+    "Mana potion": 20,
+    "Stamina elixir": 15
+}
+
+def load_player_inventories():
+    try:
+        with open("character/player_inventories.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_player_inventories(inventories):
+    with open("character/player_inventories.json", "w") as f:
+        json.dump(inventories, f, indent=2)
+def get_merchant_buy_price(item_name):
+    min_price = MINIMUM_PRICES.get(item_name)
+    if min_price is not None:
+        return round(min_price * 0.95, 2)  # 5% under minimum price, rounded to 2 decimals
+    return None
 
 def parse_iso_datetime(dt_str):
     # Remove duplicate timezone info if present
@@ -16,6 +62,34 @@ def parse_iso_datetime(dt_str):
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     return dt
+
+def get_merchant_response_by_id(player_id, merchant_id, message):
+    memory = load_memory()
+    memory_key = get_memory_key(player_id, merchant_id)
+    history = memory.get(memory_key, [])
+
+    history.append({"role": "player", "message": message})
+
+    prompt = build_prompt(merchant_id, history)
+    response = run_ollama(prompt)
+
+    if not response:
+        response = get_fallback_response(merchant_id, message)
+
+    history.append({"role": "merchant", "message": response})
+    memory[memory_key] = history
+    save_memory(memory)
+
+    return response
+
+@app.get("/merchant/last_message")
+async def merchant_last_message(player_id: str, merchant_id: str):
+    memory = load_memory()
+    key = get_memory_key(player_id, merchant_id)
+    convo = memory.get(key, [])
+    if not convo:
+        return {"message": "No conversation found."}
+    return {"last": convo[-1], "full_length": len(convo)}
 
 @app.get("/")
 async def read_root():
@@ -31,53 +105,105 @@ async def read_root():
 
 @app.get("/town")
 async def town_square():
-    return FileResponse("town_square.html")
+    return FileResponse("static/town_square.html")
 
 @app.get("/smithy")
 async def gerik_smithy():
-    return FileResponse("gerik_smithy.html")
+    return FileResponse("static/gerik_smithy.html")
 
 @app.get("/apothecary") 
 async def elara_apothecary():
-    return FileResponse("elara_apothecary.html")
+    return FileResponse("static/elara_apothecary.html")
 
 @app.get("/general-store")
 async def finn_store():
-    return FileResponse("finn_general_store.html")
+    return FileResponse("static/finn_general_store.html")
 
 @app.get("/auction-house")
 async def auction_house():
-    return FileResponse("auction_house.html")
+    return FileResponse("static/auction_house.html")
 
-# Testing purposes
+@app.get("/create_character")
+async def create_character():
+    return FileResponse("static/create_character.html")
+
 @app.post("/talk_to_merchant")
 async def talk_to_merchant(request: Request):
     data = await request.json()
     player_id = data.get("player_id")
     message = data.get("message")
-    player_location = data.get("player_location", "Edvin")  # Default to Edvin
-    shop_type = data.get("shop_type", "market")             # Default to market
+    merchant_id = data.get("merchant_id")        # optional: allow direct merchant lookup
+    player_location = data.get("player_location")  # optional
+    shop_type = data.get("shop_type")              # optional
 
-    response = get_merchant_response(player_id, player_location, shop_type, message)
-    print(f"merchant: {response}")
+    if not player_id or not message:
+        return {"error": "Missing player_id or message."}
+
+    if merchant_id:
+        # If merchant_id provided, use the ID-based flow (no town/shop required)
+        response = get_merchant_response_by_id(player_id, merchant_id, message)
+    else:
+        # Fallback to location+shop_type flow (both required if merchant_id not given)
+        if not player_location or not shop_type:
+            return {"error": "Missing merchant_id or player_location+shop_type."}
+        response = get_merchant_response(player_id, player_location, shop_type, message)
+
+    logger.info(f"merchant (resolved): {response}")
     return {"response": response}
 
+@app.post("/talk_to_merchant/{merchant_id}")
+async def talk_to_merchant_by_id(merchant_id: str, request: Request):
+    data = await request.json()
+    player_id = data.get("player_id")
+    message = data.get("message")
+    player_location = data.get("player_location")   # optional
+    shop_type = data.get("shop_type")               # optional
 
-# Correct code
-# @app.post("/talk_to_merchant")
-#async def talk_to_merchant(request: Request):
-#    data = await request.json()
-#    player_id = data.get("player_id")
-#    message = data.get("message")
-#    merchant_id = data.get("merchant_id")  # Expect merchant_id from frontend
+    if not player_id or not message:
+        return {"error": "Missing player_id or message."}
 
-#    response = get_merchant_response(merchant_id, player_id, message)
-#    print(f"merchant: {response}")
-#    return {"response": response}
+    if player_location and shop_type:
+        response = get_merchant_response(player_id, player_location, shop_type, message)
+    else:
+        response = get_merchant_response_by_id(player_id, merchant_id, message)
+
+    logger.info(f"merchant ({merchant_id}): {response}")  # <-- log the response
+    return {"response": response}
+
+@app.post("/merchant/sell")
+async def merchant_buy(request: Request):
+    data = await request.json()
+    item_name = data.get("item_name")
+    quantity = int(data.get("quantity", 1))
+    buy_price = get_merchant_buy_price(item_name)
+    if buy_price is None:
+        return {"message": f"{item_name} cannot be sold to merchants."}
+    total = buy_price * quantity
+    return {
+        "message": f"The merchant offers {buy_price} gold per {item_name} (total: {total} gold) for your {quantity} item(s)."
+    }
+
+@app.post("/create_player")
+async def create_player_endpoint(request: Request):
+    data = await request.json()
+    player_id = data.get("player_id")
+    first_class = data.get("first_class")
+    if not player_id or not first_class:
+        return {"message": "Missing player_id or first_class."}
+    if create_player(player_id, first_class):
+        return {"message": f"Player {player_id} created as {first_class}!"}
+    else:
+        return {"message": f"Player {player_id} already exists or invalid class."}
+    
 
 @app.post("/auction/list")
 async def list_item(request: Request):
     data = await request.json()
+    item_name = data.get("item_name")
+    price = int(data.get("price", 0))
+    min_price = MINIMUM_PRICES.get(item_name)
+    if min_price is not None and price < min_price:
+        return {"message": f"Minimum price for {item_name} is {min_price}."}
     now = datetime.now(timezone.utc)
     duration_hours = int(data.get("duration", 1))
     data["time_listed"] = now.isoformat()
@@ -100,9 +226,53 @@ async def browse_auction():
 @app.post("/auction/buy")
 async def buy_item(request: Request):
     data = await request.json()
-    item_id = data.get("item_id")
-    # Handle purchase logic
-    return {"message": "Item purchased", "item_id": item_id}
+    item_name = data.get("item_name")
+    seller_id = data.get("seller_id")
+    price = float(data.get("price"))
+    quantity = int(data.get("quantity", 1))
+    buyer_id = data.get("buyer_id")
+
+    listings = load_auction_listings()
+    for i, item in enumerate(listings):
+        if not all(k in item for k in ("item_name", "seller_id", "price", "quantity")):
+            continue
+        if (
+            item["item_name"] == item_name and
+            item["seller_id"] == seller_id and
+            item["price"] == price and
+            item["quantity"] >= quantity
+        ):
+            total_price = price * quantity
+            tax = round(total_price * 0.05, 2)
+            payout = total_price - tax
+
+            # Remove or update listing
+            if item["quantity"] == quantity:
+                listings.pop(i)
+            else:
+                item["quantity"] -= quantity
+            save_auction_listings(listings)
+
+            
+            inventories = load_player_inventories()
+            buyer_items = inventories.setdefault(buyer_id, [])
+            for inv_item in buyer_items:
+                if inv_item["item_name"] == item_name:
+                    inv_item["quantity"] += quantity
+                    break
+            else:
+                buyer_items.append({"item_name": item_name, "quantity": quantity})
+            save_player_inventories(inventories)
+          
+            return {
+                "message": (
+                    f"Purchase successful! {seller_id} receives {payout} gold after 5% tax ({tax} gold taken)."
+                ),
+                "tax": tax,
+                "seller_payout": payout
+            }
+
+    return {"message": "Item not found or insufficient quantity."}
 
 @app.post("/auction/cancel")
 async def cancel_listing(request: Request):

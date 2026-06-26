@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Character</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        label { display: block; margin: 1em 0 0.5em; }
+    </style>
+</head>
+<body>
+    <h1>Create Character</h1>
+    <form id="createForm">
+        <label>Player ID:
+            <input type="text" id="player_id" required>
+        </label>
+        <label>First Class:
+            <select id="first_class" required>
+                <option value="Warrior">Warrior</option>
+                <option value="Mage">Mage</option>
+                <option value="Healer">Healer</option>
+                <option value="Rogue">Rogue</option>
+                <option value="Paladin">Paladin</option>
+                <option value="Battlemage">Battlemage</option>
+                <option value="Hunter">Hunter</option>
+                <option value="Bard">Bard</option>
+                <option value="Necromancer">Necromancer</option>
+                <option value="Druid">Druid</option>
+                <option value="Monk">Monk</option>
+                <option value="Priest">Priest</option>
+                <option value="Shaman">Shaman</option>
+                <option value="Sorcerer">Sorcerer</option>
+                <option value="Assassin">Assassin</option>
+                <option value="Knight">Knight</option>
+                <option value="Ranger">Ranger</option>
+                <option value="Alchemist">Alchemist</option>
+                <option value="Enchanter">Enchanter</option>
+                <option value="Berserker">Berserker</option>
+            </select>
+        </label>
+        <button type="submit">Create</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById('createForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const data = {
+                player_id: document.getElementById('player_id').value,
+                first_class: document.getElementById('first_class').value
+            };
+            const res = await fetch('/create_player', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            document.getElementById('result').innerText = result.message || 'Character created!';
+        };
+    </script>
+</body>
+</html>

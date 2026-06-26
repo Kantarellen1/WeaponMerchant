@@ -15,7 +15,7 @@ def save_auction_listings(listings):
         json.dump({"auction_listings": listings}, f, indent=2)
 
 def return_expired_auctions():
-    from auction_data import load_auction_listings, save_auction_listings
+    from auction_house.auction_data import load_auction_listings, save_auction_listings
     import json
     from datetime import datetime
 

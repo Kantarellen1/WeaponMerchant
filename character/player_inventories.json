@@ -1,0 +1,29 @@
+{
+  "player1": [
+    {
+      "item_name": "Longsword",
+      "quantity": 1
+    }
+  ],
+  "player2": [
+    {
+      "item_name": "Longsword",
+      "quantity": 1
+    }
+  ],
+  "TestBruger": [
+    {
+      "item_name": "Longsword",
+      "quantity": 1
+    }
+  ],
+  "Kasper": [
+    {
+      "item_name": "Longsword",
+      "quantity": 1
+    }
+  ],
+  "MartiniPapi": [],
+  "Hello": [],
+  "Hola": []
+}

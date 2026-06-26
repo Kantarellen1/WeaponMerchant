@@ -1,0 +1,41 @@
+{
+    "name": "Eldoria",
+    "description": "A vast and ancient world shaped by magic, war, and the ambitions of its people.",
+    "creation_myth": "It is said the world was sung into existence by the goddess Elyra, whose voice became the wind and rivers.",
+    "history": [
+        "The Age of Dawn: The first civilizations rose along the Silver River.",
+        "The Dragon Wars: Kingdoms united to drive back the dragon overlords.",
+        "The Shattering: The world was divided into countries after the fall of the Old Empire."
+    ],
+    "major_countries": [
+        "Eldoria",
+        "Valtara",
+        "Myrr",
+        "Kharak"
+    ],
+    "current_events": [
+        "Trade routes between Eldoria and Valtara are threatened by bandit activity.",
+        "A mysterious plague has appeared in the southern lands.",
+        "The Silver Blades guild has gained fame for their recent exploits."
+    ],
+    "notable_figures": [
+        {
+            "name": "Queen Mirabel",
+            "role": "Ruler of Eldoria",
+            "description": "A wise and just queen, beloved by her people."
+        },
+        {
+            "name": "Archmage Thalos",
+            "role": "Head of the Arcane Council",
+            "description": "Keeper of magical secrets and advisor to rulers."
+        }
+    ],
+    "legends": [
+        "The Lost City of Gold is said to lie beneath the Great Desert.",
+        "A prophecy foretells the return of the dragon overlords."
+    ],
+    "clan_achievements": [
+        "The Silver Blades defeated the dragon of Buglia.",
+        "The Crimson Brotherhood brokered peace between Eldoria and Myrr."
+    ]
+}
