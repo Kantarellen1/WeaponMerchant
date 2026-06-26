@@ -1,10 +1,17 @@
+import importlib
 import json
 import subprocess
 import os
 from merchants.prompts import build_prompt
-import serial
-from serial.tools import list_ports
 import time
+
+serial = None
+list_ports = None
+try:
+    serial = importlib.import_module("serial")
+    list_ports = importlib.import_module("serial.tools.list_ports")
+except ImportError:
+    print("Warning: pyserial is not installed; Arduino support disabled")
 
 # Ensure the memory file is always resolved relative to this module
 MEMORY_FILE = os.path.join(os.path.dirname(__file__), "merchant_memory.json")
