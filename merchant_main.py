@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from merchants.merchant_data import (
     get_merchant_response,
@@ -154,11 +154,15 @@ async def merchant_last_message(player_id: str, merchant_id: str):
 
 @app.get("/")
 async def read_root():
-    return FileResponse(STATIC_DIR / "login.html")
+    return RedirectResponse(url="/login")
 
 @app.get("/login")
 async def login_page():
-    return FileResponse(STATIC_DIR / "login.html")
+    login_path = STATIC_DIR / "login.html"
+    if not login_path.exists():
+        logger.error(f"Login file not found at {login_path}")
+        return {"message": "Login page not found on server."}
+    return FileResponse(login_path)
 
 @app.get("/town")
 async def town_square():
