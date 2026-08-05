@@ -10,7 +10,15 @@ from merchants.merchant_data import (
     run_ollama,
     get_fallback_response,
 )
-from auction_house.auction_data import load_auction_listings, save_auction_listings
+from auction_house.auction_data import (
+    create_listing,
+    cleanup_expired_auctions,
+    cancel_auction_listing,
+    load_auction_listings,
+    save_auction_listings,
+    load_player_inventories,
+    save_player_inventories,
+)
 from datetime import datetime, timedelta, timezone
 import json
 from character.main_class_data import create_player
@@ -36,16 +44,6 @@ MINIMUM_PRICES = {
     "Stamina elixir": 15
 }
 
-def load_player_inventories():
-    try:
-        with open("character/player_inventories.json", "r") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
-
-def save_player_inventories(inventories):
-    with open("character/player_inventories.json", "w") as f:
-        json.dump(inventories, f, indent=2)
 def get_merchant_buy_price(item_name):
     min_price = MINIMUM_PRICES.get(item_name)
     if min_price is not None:
@@ -200,25 +198,34 @@ async def create_player_endpoint(request: Request):
 async def list_item(request: Request):
     data = await request.json()
     item_name = data.get("item_name")
-    price = int(data.get("price", 0))
+    seller_id = data.get("seller_id")
+    price = data.get("price")
+    quantity = data.get("quantity", 1)
+    duration_hours = data.get("duration", 1)
+
+    if not item_name or not seller_id or price is None:
+        return {"message": "Missing item_name, seller_id, or price."}
+
+    try:
+        price = float(price)
+        quantity = int(quantity)
+        duration_hours = int(duration_hours)
+    except (TypeError, ValueError):
+        return {"message": "Price, quantity, and duration must be numbers."}
+
     min_price = MINIMUM_PRICES.get(item_name)
     if min_price is not None and price < min_price:
         return {"message": f"Minimum price for {item_name} is {min_price}."}
-    now = datetime.now(timezone.utc)
-    duration_hours = int(data.get("duration", 1))
-    data["time_listed"] = now.isoformat()
-    data["expires_at"] = (now + timedelta(hours=duration_hours)).isoformat()
-    listings = load_auction_listings()
-    listings.append(data)
-    save_auction_listings(listings)
-    return {"message": "Item listed!"}
+
+    listing = create_listing(item_name, seller_id, price, quantity, duration_hours)
+    return {"message": "Item listed!", "listing": listing}
 
 @app.get("/auction/browse")
 async def browse_auction():
-    listings = load_auction_listings()
+    active_listings = cleanup_expired_auctions()
     now = datetime.now(timezone.utc)
     valid_listings = [
-        item for item in listings
+        item for item in active_listings
         if "expires_at" not in item or parse_iso_datetime(item["expires_at"]) > now
     ]
     return {"auction_listings": valid_listings}
@@ -226,57 +233,66 @@ async def browse_auction():
 @app.post("/auction/buy")
 async def buy_item(request: Request):
     data = await request.json()
-    item_name = data.get("item_name")
-    seller_id = data.get("seller_id")
-    price = float(data.get("price"))
+    item_id = data.get("item_id")
     quantity = int(data.get("quantity", 1))
     buyer_id = data.get("buyer_id")
 
+    if not item_id or not buyer_id:
+        return {"message": "Missing item_id or buyer_id."}
+
     listings = load_auction_listings()
+    now = datetime.now(timezone.utc)
     for i, item in enumerate(listings):
-        if not all(k in item for k in ("item_name", "seller_id", "price", "quantity")):
+        if item.get("item_id") != item_id:
             continue
-        if (
-            item["item_name"] == item_name and
-            item["seller_id"] == seller_id and
-            item["price"] == price and
-            item["quantity"] >= quantity
-        ):
-            total_price = price * quantity
-            tax = round(total_price * 0.05, 2)
-            payout = total_price - tax
 
-            # Remove or update listing
-            if item["quantity"] == quantity:
-                listings.pop(i)
-            else:
-                item["quantity"] -= quantity
-            save_auction_listings(listings)
+        if "expires_at" in item and parse_iso_datetime(item["expires_at"]) <= now:
+            return {"message": "This listing has expired."}
 
-            
-            inventories = load_player_inventories()
-            buyer_items = inventories.setdefault(buyer_id, [])
-            for inv_item in buyer_items:
-                if inv_item["item_name"] == item_name:
-                    inv_item["quantity"] += quantity
-                    break
-            else:
-                buyer_items.append({"item_name": item_name, "quantity": quantity})
-            save_player_inventories(inventories)
-          
-            return {
-                "message": (
-                    f"Purchase successful! {seller_id} receives {payout} gold after 5% tax ({tax} gold taken)."
-                ),
-                "tax": tax,
-                "seller_payout": payout
-            }
+        if item["quantity"] < quantity:
+            return {"message": "Insufficient quantity available."}
 
-    return {"message": "Item not found or insufficient quantity."}
+        total_price = item["price"] * quantity
+        tax = round(total_price * 0.05, 2)
+        payout = round(total_price - tax, 2)
+
+        if item["quantity"] == quantity:
+            listings.pop(i)
+        else:
+            item["quantity"] -= quantity
+
+        save_auction_listings(listings)
+
+        inventories = load_player_inventories()
+        buyer_items = inventories.setdefault(buyer_id, [])
+        for inv_item in buyer_items:
+            if inv_item["item_name"] == item["item_name"]:
+                inv_item["quantity"] += quantity
+                break
+        else:
+            buyer_items.append({"item_name": item["item_name"], "quantity": quantity})
+        save_player_inventories(inventories)
+
+        return {
+            "message": (
+                f"Purchase successful! {item['seller_id']} receives {payout} gold after 5% tax ({tax} gold taken)."
+            ),
+            "tax": tax,
+            "seller_payout": payout,
+            "item": item,
+            "quantity_bought": quantity
+        }
+
+    return {"message": "Listing not found."}
 
 @app.post("/auction/cancel")
 async def cancel_listing(request: Request):
     data = await request.json()
     item_id = data.get("item_id")
-    return {"message": "Listing canceled", "item_id": item_id}
-    # Remove a listing from the auction house
+    if not item_id:
+        return {"message": "Missing item_id."}
+
+    canceled = cancel_auction_listing(item_id)
+    if canceled:
+        return {"message": "Listing canceled.", "listing": canceled}
+    return {"message": "Listing not found."}
