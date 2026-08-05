@@ -126,7 +126,7 @@ def get_merchant_file(shop_type):
     return None
 
 
-def get_merchant_response(player_id, player_location, shop_type, message):
+def get_merchant_response(player_id, player_location, shop_type, message, player_name=None):
     merchant_id = get_current_merchant_id(player_location, shop_type)
     merchant_file = get_merchant_file(shop_type)
     town = player_location
@@ -136,7 +136,11 @@ def get_merchant_response(player_id, player_location, shop_type, message):
     memory_key = get_memory_key(player_id, merchant_id)
     history = memory.get(memory_key, [])
 
-    history.append({"role": "player", "message": message})
+    # Include player_name when available so prompts can use the adventurer's name
+    entry = {"role": "player", "message": message}
+    if player_name:
+        entry["player_name"] = player_name
+    history.append(entry)
 
     prompt = build_prompt(merchant_id, history, town=town, merchant_file=merchant_file)
     response = run_ollama(prompt)
@@ -156,7 +160,7 @@ def get_merchant_response(player_id, player_location, shop_type, message):
     return response
 
 
-def get_merchant_response_by_id(player_id, merchant_id, message):
+def get_merchant_response_by_id(player_id, merchant_id, message, player_name=None):
     """
     Handle requests that specify merchant_id in the URL (no town/shop_type provided).
     """
@@ -165,7 +169,10 @@ def get_merchant_response_by_id(player_id, merchant_id, message):
     memory_key = get_memory_key(player_id, merchant_id)
     history = memory.get(memory_key, [])
 
-    history.append({"role": "player", "message": message})
+    entry = {"role": "player", "message": message}
+    if player_name:
+        entry["player_name"] = player_name
+    history.append(entry)
 
     prompt = build_prompt(merchant_id, history)  # build_prompt will handle missing merchant file defensively
     response = run_ollama(prompt)

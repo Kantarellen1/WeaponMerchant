@@ -176,11 +176,13 @@
             input.value = '';
 
             try {
+                const token = localStorage.getItem(sessionKey);
                 const response = await fetch(`/talk_to_merchant`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         player_id: playerId,
+                        session_token: token,
                         message: message,
                         player_location: "Edvin",
                         shop_type: "market"

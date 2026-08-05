@@ -75,6 +75,8 @@
             e.preventDefault();
             const data = {
                 item_name: document.getElementById('item_name').value,
+                session_token: localStorage.getItem(sessionKey),
+                // seller_id is determined server-side from the session_token
                 seller_id: playerId || document.getElementById('seller_id').value,
                 price: parseInt(document.getElementById('price').value),
                 quantity: parseInt(document.getElementById('quantity').value),
@@ -154,7 +156,7 @@
                 body: JSON.stringify({
                     item_id: item.item_id,
                     quantity: 1,
-                    buyer_id: playerId
+                    session_token: localStorage.getItem(sessionKey)
                 })
             });
             const result = await buyRes.json();

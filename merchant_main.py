@@ -124,12 +124,16 @@ def delete_session(session_token):
     return False
 
 
-def get_merchant_response_by_id(player_id, merchant_id, message):
+def get_merchant_response_by_id(player_id, merchant_id, message, player_name=None):
     memory = load_memory()
     memory_key = get_memory_key(player_id, merchant_id)
     history = memory.get(memory_key, [])
 
-    history.append({"role": "player", "message": message})
+    # include player_name in the stored history when available
+    entry = {"role": "player", "message": message}
+    if player_name:
+        entry["player_name"] = player_name
+    history.append(entry)
 
     prompt = build_prompt(merchant_id, history)
     response = run_ollama(prompt)
@@ -196,23 +200,36 @@ async def create_character():
 @app.post("/talk_to_merchant")
 async def talk_to_merchant(request: Request):
     data = await request.json()
+    # Accept either a direct player_id (legacy) or a session_token (preferred)
+    session_token = data.get("session_token")
     player_id = data.get("player_id")
     message = data.get("message")
     merchant_id = data.get("merchant_id")        # optional: allow direct merchant lookup
     player_location = data.get("player_location")  # optional
     shop_type = data.get("shop_type")              # optional
 
+    # Resolve session token if present
+    if session_token:
+        resolved = validate_session(session_token)
+        if not resolved:
+            return {"error": "Invalid session_token."}
+        player_id = resolved
+
     if not player_id or not message:
         return {"error": "Missing player_id or message."}
 
+    # Get a display name for the player (use player_id as fallback)
+    profile = get_player_profile(player_id) or {}
+    player_name = profile.get("display_name") or player_id
+
     if merchant_id:
         # If merchant_id provided, use the ID-based flow (no town/shop required)
-        response = get_merchant_response_by_id(player_id, merchant_id, message)
+        response = get_merchant_response_by_id(player_id, merchant_id, message, player_name=player_name)
     else:
         # Fallback to location+shop_type flow (both required if merchant_id not given)
         if not player_location or not shop_type:
             return {"error": "Missing merchant_id or player_location+shop_type."}
-        response = get_merchant_response(player_id, player_location, shop_type, message)
+        response = get_merchant_response(player_id, player_location, shop_type, message, player_name=player_name)
 
     logger.info(f"merchant (resolved): {response}")
     return {"response": response}
@@ -220,18 +237,29 @@ async def talk_to_merchant(request: Request):
 @app.post("/talk_to_merchant/{merchant_id}")
 async def talk_to_merchant_by_id(merchant_id: str, request: Request):
     data = await request.json()
+    session_token = data.get("session_token")
     player_id = data.get("player_id")
     message = data.get("message")
     player_location = data.get("player_location")   # optional
     shop_type = data.get("shop_type")               # optional
 
+    # Resolve session token if present
+    if session_token:
+        resolved = validate_session(session_token)
+        if not resolved:
+            return {"error": "Invalid session_token."}
+        player_id = resolved
+
     if not player_id or not message:
         return {"error": "Missing player_id or message."}
 
+    profile = get_player_profile(player_id) or {}
+    player_name = profile.get("display_name") or player_id
+
     if player_location and shop_type:
-        response = get_merchant_response(player_id, player_location, shop_type, message)
+        response = get_merchant_response(player_id, player_location, shop_type, message, player_name=player_name)
     else:
-        response = get_merchant_response_by_id(player_id, merchant_id, message)
+        response = get_merchant_response_by_id(player_id, merchant_id, message, player_name=player_name)
 
     logger.info(f"merchant ({merchant_id}): {response}")  # <-- log the response
     return {"response": response}
@@ -335,13 +363,20 @@ async def player_profile(player_id: str = None, session_token: str = None):
 async def list_item(request: Request):
     data = await request.json()
     item_name = data.get("item_name")
-    seller_id = data.get("seller_id")
     price = data.get("price")
     quantity = data.get("quantity", 1)
     duration_hours = data.get("duration", 1)
+    session_token = data.get("session_token")
 
-    if not item_name or not seller_id or price is None:
-        return {"message": "Missing item_name, seller_id, or price."}
+    # Require a valid session token to determine the seller identity server-side
+    if not session_token:
+        return {"message": "Missing session_token."}
+    seller_id = validate_session(session_token)
+    if not seller_id:
+        return {"message": "Invalid session_token."}
+
+    if not item_name or price is None:
+        return {"message": "Missing item_name or price."}
 
     try:
         price = float(price)
@@ -377,10 +412,13 @@ async def buy_item(request: Request):
     data = await request.json()
     item_id = data.get("item_id")
     quantity = int(data.get("quantity", 1))
-    buyer_id = data.get("buyer_id")
+    session_token = data.get("session_token")
 
-    if not item_id or not buyer_id:
-        return {"message": "Missing item_id or buyer_id."}
+    if not item_id or not session_token:
+        return {"message": "Missing item_id or session_token."}
+    buyer_id = validate_session(session_token)
+    if not buyer_id:
+        return {"message": "Invalid session_token."}
 
     listings = load_auction_listings()
     now = datetime.now(timezone.utc)
@@ -441,10 +479,25 @@ async def buy_item(request: Request):
 async def cancel_listing(request: Request):
     data = await request.json()
     item_id = data.get("item_id")
+    session_token = data.get("session_token")
     if not item_id:
         return {"message": "Missing item_id."}
+    if not session_token:
+        return {"message": "Missing session_token."}
 
-    canceled = cancel_auction_listing(item_id)
-    if canceled:
-        return {"message": "Listing canceled.", "listing": canceled}
+    requester = validate_session(session_token)
+    if not requester:
+        return {"message": "Invalid session_token."}
+
+    # Ensure only the seller may cancel their own listing
+    listings = load_auction_listings()
+    for item in listings:
+        if item.get("item_id") == item_id:
+            if item.get("seller_id") != requester:
+                return {"message": "Only the seller may cancel this listing."}
+            canceled = cancel_auction_listing(item_id)
+            if canceled:
+                return {"message": "Listing canceled.", "listing": canceled}
+            return {"message": "Listing not found."}
+
     return {"message": "Listing not found."}

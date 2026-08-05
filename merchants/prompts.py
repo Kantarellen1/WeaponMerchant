@@ -222,7 +222,8 @@ def build_prompt(merchant_id, history, town=None, merchant_file=None):
     convo = ""
     for entry in history[-6:]:
         if entry["role"] == "player":
-            convo += f"Adventurer: {entry['message']}\n"
+            player_display = entry.get("player_name") or "Adventurer"
+            convo += f"{player_display}: {entry['message']}\n"
         else:
             convo += f"{merchant.get('name', merchant_id.title())}: {entry['message']}\n"
 
