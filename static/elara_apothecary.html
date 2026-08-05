@@ -125,8 +125,20 @@
     </div>
 
     <script>
-        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        let playerId = null;
         const merchantId = 'elara';
+        const sessionKey = 'weapon_merchant_session';
+
+        async function ensurePlayer() {
+            const token = localStorage.getItem(sessionKey);
+            if (!token) { location.href = '/login'; return false; }
+            const res = await fetch(`/player/profile?session_token=${encodeURIComponent(token)}`);
+            const data = await res.json();
+            if (!res.ok || !data.player_id) { localStorage.removeItem(sessionKey); location.href = '/login'; return false; }
+            playerId = data.player_id;
+            addMessage('System', `You are logged in as ${playerId}.`);
+            return true;
+        }
         
         // Apothecary ambient sounds
         const ambientSounds = [
@@ -168,11 +180,11 @@
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        player_id: "your_player_id",
-                        message: message, // Use the actual message!
-                        player_location: "Buglia",
-                        shop_type: "apothecary"
-                    })
+                            player_id: playerId,
+                            message: message,
+                            player_location: "Buglia",
+                            shop_type: "apothecary"
+                        })
                 });
                 
                 const data = await response.json();
@@ -223,6 +235,12 @@
 
         // Focus input on page load
         document.getElementById('messageInput').focus();
+        // Initialize
+        (async function(){
+            const ok = await ensurePlayer();
+            if (!ok) return;
+            addMessage('System', 'You enter Elara\'s apothecary. The air smells of herbs.');
+        })();
     </script>
 </body>
 </html>

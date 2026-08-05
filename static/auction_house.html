@@ -13,6 +13,7 @@
 </head>
 <body>
     <h1>Auction House</h1>
+    <button onclick="location.href='/town'">← Back to Town</button>
 
     <div class="section">
         <h2>List an Item</h2>
@@ -27,7 +28,7 @@
                 </select>
             </label><br>
             <label>Item Name: <input type="text" id="item_name" required></label><br>
-            <label>Seller ID: <input type="text" id="seller_id" required></label><br>
+            <label style="display:none">Seller ID: <input type="text" id="seller_id" required></label><br>
             <label>Price: <input type="number" id="price" required></label><br>
             <label>Quantity: <input type="number" id="quantity" value="1" min="1" required></label><br>
             <button type="submit">List Item</button>
@@ -56,14 +57,28 @@
     </div>
 
     <script>
+        const sessionKey = 'weapon_merchant_session';
+        let playerId = null;
+
+        async function ensurePlayer() {
+            const token = localStorage.getItem(sessionKey);
+            if (!token) { location.href = '/login'; return false; }
+            const res = await fetch(`/player/profile?session_token=${encodeURIComponent(token)}`);
+            const data = await res.json();
+            if (!res.ok || !data.player_id) { localStorage.removeItem(sessionKey); location.href = '/login'; return false; }
+            playerId = data.player_id;
+            document.getElementById('seller_id').value = playerId;
+            return true;
+        }
+
         document.getElementById('listForm').onsubmit = async function(e) {
             e.preventDefault();
             const data = {
                 item_name: document.getElementById('item_name').value,
-                seller_id: document.getElementById('seller_id').value,
+                seller_id: playerId || document.getElementById('seller_id').value,
                 price: parseInt(document.getElementById('price').value),
                 quantity: parseInt(document.getElementById('quantity').value),
-                duration: parseInt(document.getElementById('duration').value) // <-- add this line
+                duration: parseInt(document.getElementById('duration').value)
             };
             const res = await fetch('/auction/list', {
                 method: 'POST',
@@ -129,15 +144,17 @@
             const res = await fetch('/auction/browse');
             const data = await res.json();
             const item = data.auction_listings[idx];
-            const buyer_id = prompt("Enter your player ID to buy:");
-            if (!buyer_id) return;
+            if (!playerId) {
+                const ok = await ensurePlayer();
+                if (!ok) return;
+            }
             const buyRes = await fetch('/auction/buy', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     item_id: item.item_id,
                     quantity: 1,
-                    buyer_id: buyer_id
+                    buyer_id: playerId
                 })
             });
             const result = await buyRes.json();
@@ -146,7 +163,11 @@
         }
 
         // Initial load
-        loadListings();
+        (async function(){
+            const ok = await ensurePlayer();
+            if (!ok) return;
+            loadListings();
+        })();
     </script>
 </body>
 </html>

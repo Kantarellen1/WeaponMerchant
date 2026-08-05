@@ -64,8 +64,20 @@
     </div>
 
     <script>
-        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        let playerId = null;
         const merchantId = 'gerik';
+        const sessionKey = 'weapon_merchant_session';
+
+        async function ensurePlayer() {
+            const token = localStorage.getItem(sessionKey);
+            if (!token) { location.href = '/login'; return false; }
+            const res = await fetch(`/player/profile?session_token=${encodeURIComponent(token)}`);
+            const data = await res.json();
+            if (!res.ok || !data.player_id) { localStorage.removeItem(sessionKey); location.href = '/login'; return false; }
+            playerId = data.player_id;
+            addMessage('System', `You are logged in as ${playerId}.`);
+            return true;
+        }
         
         // Smithy-specific functionality
         function addMessage(sender, message) {
@@ -96,11 +108,11 @@
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        player_id: "your_player_id",
-                        message: message,
-                        player_location: "Edvin",
-                        shop_type: "smithy"
-                    })
+                            player_id: playerId,
+                            message: message,
+                            player_location: "Edvin",
+                            shop_type: "smithy"
+                        })
                 });
 
                 const data = await response.json();
@@ -120,7 +132,11 @@
         }
 
         // Initialize
-        addMessage('System', 'You step into the warm, smoky smithy. Gerik looks up from his anvil with a smile.');
+        (async function(){
+            const ok = await ensurePlayer();
+            if (!ok) return;
+            addMessage('System', 'You step into the warm, smoky smithy. Gerik looks up from his anvil with a smile.');
+        })();
     </script>
 </body>
 </html>

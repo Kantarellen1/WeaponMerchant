@@ -125,8 +125,20 @@
     </div>
 
     <script>
-        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        let playerId = null;
         const merchantId = 'finn';
+        const sessionKey = 'weapon_merchant_session';
+
+        async function ensurePlayer() {
+            const token = localStorage.getItem(sessionKey);
+            if (!token) { location.href = '/login'; return false; }
+            const res = await fetch(`/player/profile?session_token=${encodeURIComponent(token)}`);
+            const data = await res.json();
+            if (!res.ok || !data.player_id) { localStorage.removeItem(sessionKey); location.href = '/login'; return false; }
+            playerId = data.player_id;
+            addMessage('System', `You are logged in as ${playerId}.`);
+            return true;
+        }
         
         // Marketplace ambient sounds
         const ambientSounds = [
@@ -170,8 +182,8 @@
                     body: JSON.stringify({
                         player_id: playerId,
                         message: message,
-                        player_location: "Edvin",      // <-- Add this
-                        shop_type: "market"            // <-- And this
+                        player_location: "Edvin",
+                        shop_type: "market"
                     })
                 });
 
@@ -198,6 +210,14 @@
             } catch (error) {
                 addMessage('System', 'Error: ' + error.message);
             }
+        }
+
+        // Initialize
+        (async function(){
+            const ok = await ensurePlayer();
+            if (!ok) return;
+            addMessage('System', 'You step into Finn\'s busy stall.');
+        })();
         }
 
         // Initialize with atmospheric entry
