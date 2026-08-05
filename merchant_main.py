@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from merchants.merchant_data import (
     get_merchant_response,
     get_merchant_response_by_id,
@@ -40,6 +41,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 SESSION_FILE = Path(__file__).resolve().parent.parent / "character" / "player_sessions.json"
 
@@ -149,19 +154,19 @@ async def merchant_last_message(player_id: str, merchant_id: str):
 
 @app.get("/")
 async def read_root():
-    return FileResponse("static/login.html")
+    return FileResponse(STATIC_DIR / "login.html")
 
 @app.get("/login")
 async def login_page():
-    return FileResponse("static/login.html")
+    return FileResponse(STATIC_DIR / "login.html")
 
 @app.get("/town")
 async def town_square():
-    return FileResponse("static/town_square.html")
+    return FileResponse(STATIC_DIR / "town_square.html")
 
 @app.get("/smithy")
 async def gerik_smithy():
-    return FileResponse("static/gerik_smithy.html")
+    return FileResponse(STATIC_DIR / "gerik_smithy.html")
 
 @app.get("/apothecary") 
 async def elara_apothecary():
