@@ -1,82 +1,10 @@
-import importlib
 import json
 import subprocess
 import os
 from merchants.prompts import build_prompt
-import time
-
-serial = None
-list_ports = None
-try:
-    serial = importlib.import_module("serial")
-    list_ports = importlib.import_module("serial.tools.list_ports")
-except ImportError:
-    print("Warning: pyserial is not installed; Arduino support disabled")
 
 # Ensure the memory file is always resolved relative to this module
 MEMORY_FILE = os.path.join(os.path.dirname(__file__), "merchant_memory.json")
-
-# UART config
-ARDUINO_BAUD = 115200
-_arduino_ser = None
-
-def find_arduino_port():
-    """
-    Auto-detect and return Arduino COM port. Tries to open each potential port.
-    Returns None if no Arduino found or accessible.
-    """
-    for port in list_ports.comports():
-        # Check for Arduino identifiers (CH340, CP210x, FT232, etc.)
-        if any(identifier in (port.description or "") for identifier in 
-               ["Arduino", "CH340", "CP210", "FT232", "Serial"]):
-            try:
-                # Try to actually open the port to verify it's accessible
-                test_ser = serial.Serial(port.device, ARDUINO_BAUD, timeout=1)
-                test_ser.close()
-                print(f"Found accessible Arduino on {port.device}: {port.description}")
-                return port.device
-            except Exception as e:
-                print(f"Port {port.device} matched Arduino criteria but couldn't open: {e}")
-                continue
-    print("No accessible Arduino found on any COM port")
-    return None
-
-def init_arduino_serial():
-    global _arduino_ser
-    if _arduino_ser:
-        return
-    try:
-        arduino_port = find_arduino_port()
-        if not arduino_port:
-            print("Warning: could not detect Arduino on any COM port")
-            _arduino_ser = None
-            return
-        _arduino_ser = serial.Serial(arduino_port, ARDUINO_BAUD, timeout=1)
-        time.sleep(2)  # allow Arduino reset
-        print(f"Connected to Arduino on {arduino_port}")
-    except Exception as e:
-        print(f"Warning: could not open Arduino serial port: {e}")
-        _arduino_ser = None
-
-def send_to_arduino(text: str):
-    """
-    Send a single newline-terminated line to the Uno. Non‑fatal on errors.
-    Truncate long text to 32 chars (two 16-char LCD lines) or let host handle scrolling.
-    """
-    try:
-        if not _arduino_ser:
-            init_arduino_serial()
-        if not _arduino_ser:
-            return
-        safe = text.replace("\r", " ").replace("\n", " ").strip()
-        safe = safe[:200]  # guard against huge payloads; Uno-side will show 32 chars max
-        _arduino_ser.write((safe + "\n").encode("utf-8"))
-        _arduino_ser.flush()
-    except Exception as e:
-        print(f"Error sending to Arduino: {e}")
-
-
-
 
 def load_memory():
     try:
@@ -152,11 +80,6 @@ def get_merchant_response(player_id, player_location, shop_type, message, player
     memory[memory_key] = history
     save_memory(memory)
     print(f"Saved memory for {memory_key}: {history}")
-    # Send short notification/text to Arduino (non-fatal)
-    try:
-        send_to_arduino(response)
-    except Exception:
-        pass
     return response
 
 
@@ -184,11 +107,6 @@ def get_merchant_response_by_id(player_id, merchant_id, message, player_name=Non
     memory[memory_key] = history
     save_memory(memory)
     print(f"Saved memory for {memory_key}: {history}")
-    # Send short notification/text to Arduino (non-fatal)
-    try:
-        send_to_arduino(response)
-    except Exception:
-        pass
     return response
 
 

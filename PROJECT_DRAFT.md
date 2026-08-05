@@ -23,7 +23,7 @@ Dette projekt er et letvægts fantasy-testværktøj til at eksperimentere med AI
   - lore-drevne prompts
   - fallback-svar, når AI-tjenesten ikke er tilgængelig
   - hukommelse pr. spiller, så samtaler kan føles vedvarende
-- Der findes også valgfri Arduino-serial-understøttelse til at sende købmandssvar til hardware.
+- Projektet fokuserer på software og har ikke hardware- eller Arduino-serial-understøttelse.
 
 ### Verden og lore-indhold
 - By- og købmand-lore ligger under [lore](lore)
