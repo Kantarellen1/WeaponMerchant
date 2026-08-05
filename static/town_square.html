@@ -1,77 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edvin Town Square</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
-            text-align: center;
-            padding: 40px;
-        }
-        .town-map { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 20px; 
-            max-width: 600px; 
-            margin: 40px auto; 
-        }
-        .building { 
-            background: rgba(139,69,19,0.8); 
-            color: white; 
-            padding: 30px; 
-            border-radius: 15px; 
-            cursor: pointer; 
-            transition: transform 0.3s;
-            text-decoration: none;
-        }
-        .building:hover { 
-            transform: scale(1.05); 
-            background: rgba(139,69,19,1);
-        }
-    </style>
+        <title>Edvin Town Square — Dashboard</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <style>
+                body { font-family: Arial, sans-serif; margin: 0; background: linear-gradient(135deg,#87CEEB 0%,#98FB98 100%); color:#222 }
+                .container { max-width: 1000px; margin: 24px auto; padding: 20px; }
+                header { display:flex; align-items:center; justify-content:space-between; gap:16px }
+                h1 { margin:0; }
+                .widgets { display:flex; gap:16px; margin-top:20px }
+                .widget { background:rgba(255,255,255,0.9); padding:16px; border-radius:10px; min-width:160px; box-shadow:0 6px 18px rgba(0,0,0,0.12) }
+                .widget h3 { margin:0 0 8px 0 }
+                .town-map { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px }
+                .building { background:rgba(139,69,19,0.9); color:white; padding:20px; border-radius:12px; text-decoration:none; display:flex; flex-direction:column; gap:6px; align-items:flex-start }
+                .building.locked { background:rgba(100,100,100,0.6); cursor:default; opacity:0.85 }
+                .inventory-list { max-height:220px; overflow:auto }
+                .list-item { background:#f6f6f6; padding:8px; border-radius:6px; margin-bottom:8px }
+                .actions { display:flex; gap:8px }
+                button { padding:8px 12px; border-radius:8px; border:0; cursor:pointer }
+        </style>
 </head>
 <body>
-    <h1>🏘️ Welcome to Edvin 🏘️</h1>
-    <p>A peaceful merchant town where adventurers come to trade</p>
-    
-    <div class="town-map">
-        <a href="/smithy" class="building">
-            <h3>🔨 Smithy</h3>
-            <p>Gerik's Weapons & Armor</p>
-            <small>*Hammer sounds*</small>
-        </a>
-        
-        <a href="/apothecary" class="building">
-            <h3>🧪 Apothecary</h3>
-            <p>Elara's Potions & Herbs</p>
-            <small>*Bubbling cauldrons*</small>
-        </a>
-        
-        <a href="/general-store" class="building">
-            <h3>📦 General Store</h3>
-            <p>Finn's Supplies & Tools</p>
-            <small>*Bustling marketplace*</small>
-        </a>
-        
-        <div class="/auction-house" style="background: rgba(100,100,100,0.5);">
-            <h3>🏠 Auction House</h3>
-            <p>Bid on Items & Find Treasures</p>
-            <small>*Bidding starts at dawn*</small>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🏘️ Edvin — Town Square</h1>
+                <p id="welcome-sub">A friendly hub for traders and adventurers.</p>
+            </div>
+            <div class="actions">
+                <button id="btn-logout">Logout</button>
+            </div>
+        </header>
+
+        <div class="widgets">
+            <div class="widget" id="gold-widget">
+                <h3>Gold</h3>
+                <div id="gold-amount">—</div>
+            </div>
+
+            <div class="widget" style="flex:1">
+                <h3>Inventory</h3>
+                <div class="inventory-list" id="inventory-list">
+                    <div>Loading...</div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3>Quick Links</h3>
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                    <a id="link-smithy" class="building" href="/smithy">🔨 Smithy</a>
+                    <a id="link-apothecary" class="building" href="/apothecary">🧪 Apothecary</a>
+                    <a id="link-general" class="building" href="/general-store">📦 General Store</a>
+                    <a id="link-auction" class="building locked" href="#">🏠 Auction House (locked)</a>
+                </div>
+            </div>
         </div>
-        
-        <div class="building" style="background: rgba(100,100,100,0.5);">
-            <h3>⛪ Temple</h3>
-            <p>Healing & Blessings</p>
-            <small>*Coming Soon*</small>
-        </div>
-        
-        <div class="building" style="background: rgba(100,100,100,0.5);">
-            <h3>🏰 Mayor's Office</h3>
-            <p>Quests & Information</p>
-            <small>*Coming Soon*</small>
+
+        <div class="town-map" id="town-map">
+            <!-- Additional area cards could go here -->
         </div>
     </div>
+
+    <script>
+        const sessionKey = 'weapon_merchant_session';
+        const goldEl = document.getElementById('gold-amount');
+        const invListEl = document.getElementById('inventory-list');
+        const auctionLink = document.getElementById('link-auction');
+        const btnLogout = document.getElementById('btn-logout');
+
+        async function requireLoginOrRedirect() {
+            const token = localStorage.getItem(sessionKey);
+            if (!token) {
+                location.href = '/login';
+                return null;
+            }
+            const res = await fetch(`/player/profile?session_token=${encodeURIComponent(token)}`);
+            const data = await res.json();
+            if (!res.ok || !data.player_id) {
+                localStorage.removeItem(sessionKey);
+                location.href = '/login';
+                return null;
+            }
+            return data;
+        }
+
+        function renderInventory(items) {
+            if (!items || !items.length) {
+                invListEl.innerHTML = '<div class="list-item">No items in inventory.</div>';
+                return;
+            }
+            invListEl.innerHTML = items.map(i => `<div class="list-item"><strong>${i.item_name}</strong> x ${i.quantity}</div>`).join('');
+        }
+
+        function unlockAuction(enabled) {
+            if (enabled) {
+                auctionLink.classList.remove('locked');
+                auctionLink.href = '/auction-house';
+                auctionLink.textContent = '🏠 Auction House';
+            } else {
+                auctionLink.classList.add('locked');
+                auctionLink.href = '#';
+                auctionLink.textContent = '🏠 Auction House (locked)';
+            }
+        }
+
+        btnLogout.addEventListener('click', async () => {
+            const token = localStorage.getItem(sessionKey);
+            if (token) {
+                await fetch('/auth/logout', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({session_token:token}) });
+                localStorage.removeItem(sessionKey);
+            }
+            location.href = '/login';
+        });
+
+        (async function init(){
+            const profile = await requireLoginOrRedirect();
+            if (!profile) return;
+            goldEl.textContent = profile.gold ?? 0;
+            renderInventory(profile.inventory);
+            // Unlock auction house if player has any gold (example condition)
+            unlockAuction((profile.gold ?? 0) > 0);
+            document.getElementById('welcome-sub').textContent = `Logged in as ${profile.player_id}`;
+        })();
+    </script>
 </body>
 </html>
