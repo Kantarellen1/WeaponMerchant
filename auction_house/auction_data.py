@@ -5,6 +5,83 @@ from pathlib import Path
 
 AUCTION_FILE = Path(__file__).resolve().parent / "auction_house.json"
 PLAYER_INVENTORIES_FILE = Path(__file__).resolve().parent.parent / "character" / "player_inventories.json"
+PLAYER_DATA_FILE = Path(__file__).resolve().parent.parent / "character" / "player_data.json"
+
+
+def load_player_data():
+    try:
+        with open(PLAYER_DATA_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+    migrated = False
+    for player_id, player in data.items():
+        if not isinstance(player, dict):
+            continue
+        if "gold" not in player:
+            player["gold"] = 0
+            migrated = True
+    if migrated:
+        save_player_data(data)
+    return data
+
+
+def save_player_data(data):
+    PLAYER_DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(PLAYER_DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
+def get_player_gold(player_id):
+    data = load_player_data()
+    player = data.get(player_id)
+    if player is None:
+        return None
+    return player.get("gold", 0)
+
+
+def player_exists(player_id):
+    data = load_player_data()
+    return player_id in data
+
+
+def remove_item_from_inventory(inventories, player_id, item_name, quantity):
+    if quantity <= 0:
+        return False
+    player_items = inventories.get(player_id, [])
+    for inv_item in player_items:
+        if inv_item["item_name"] == item_name:
+            if inv_item["quantity"] < quantity:
+                return False
+            inv_item["quantity"] -= quantity
+            if inv_item["quantity"] == 0:
+                player_items.remove(inv_item)
+            inventories[player_id] = player_items
+            return True
+    return False
+
+
+def add_item_to_inventory(inventories, player_id, item_name, quantity):
+    if quantity <= 0:
+        return False
+    player_items = inventories.setdefault(player_id, [])
+    for inv_item in player_items:
+        if inv_item["item_name"] == item_name:
+            inv_item["quantity"] += quantity
+            return True
+    player_items.append({"item_name": item_name, "quantity": quantity})
+    return True
+
+
+def change_player_gold(player_id, amount):
+    data = load_player_data()
+    player = data.get(player_id)
+    if player is None:
+        return False
+    player["gold"] = player.get("gold", 0) + amount
+    save_player_data(data)
+    return True
 
 
 def load_auction_listings():

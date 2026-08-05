@@ -18,16 +18,30 @@ from auction_house.auction_data import (
     save_auction_listings,
     load_player_inventories,
     save_player_inventories,
+    load_player_data,
+    change_player_gold,
+    get_player_gold,
+    player_exists,
+    remove_item_from_inventory,
+    add_item_to_inventory,
 )
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+import secrets
 import json
-from character.main_class_data import create_player
+from character.main_class_data import (
+    create_player,
+    verify_player_password,
+    get_player_profile,
+)
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+SESSION_FILE = Path(__file__).resolve().parent.parent / "character" / "player_sessions.json"
 
 MINIMUM_PRICES = {
     "Longsword": 40,
@@ -61,6 +75,50 @@ def parse_iso_datetime(dt_str):
         dt = dt.replace(tzinfo=timezone.utc)
     return dt
 
+def load_player_sessions():
+    try:
+        with open(SESSION_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_player_sessions(sessions):
+    SESSION_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(SESSION_FILE, "w", encoding="utf-8") as f:
+        json.dump(sessions, f, indent=2)
+
+
+def create_session(player_id):
+    sessions = load_player_sessions()
+    token = secrets.token_hex(24)
+    sessions[token] = {
+        "player_id": player_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    save_player_sessions(sessions)
+    return token
+
+
+def validate_session(session_token):
+    if not session_token:
+        return None
+    sessions = load_player_sessions()
+    session = sessions.get(session_token)
+    if not session:
+        return None
+    return session.get("player_id")
+
+
+def delete_session(session_token):
+    sessions = load_player_sessions()
+    if session_token in sessions:
+        sessions.pop(session_token)
+        save_player_sessions(sessions)
+        return True
+    return False
+
+
 def get_merchant_response_by_id(player_id, merchant_id, message):
     memory = load_memory()
     memory_key = get_memory_key(player_id, merchant_id)
@@ -91,15 +149,11 @@ async def merchant_last_message(player_id: str, merchant_id: str):
 
 @app.get("/")
 async def read_root():
-    return {
-        "message": "Welcome to Edvin's Merchant District!",
-        "endpoints": {
-            "/town": "Visit the town square",
-            "/smithy": "Visit Gerik's Smithy", 
-            "/apothecary": "Visit Elara's Apothecary",
-            "/general-store": "Visit Finn's General Store"
-        }
-    }
+    return FileResponse("static/login.html")
+
+@app.get("/login")
+async def login_page():
+    return FileResponse("static/login.html")
 
 @app.get("/town")
 async def town_square():
@@ -186,13 +240,82 @@ async def create_player_endpoint(request: Request):
     data = await request.json()
     player_id = data.get("player_id")
     first_class = data.get("first_class")
+    password = data.get("password")
     if not player_id or not first_class:
         return {"message": "Missing player_id or first_class."}
-    if create_player(player_id, first_class):
+    if create_player(player_id, first_class, password):
         return {"message": f"Player {player_id} created as {first_class}!"}
     else:
         return {"message": f"Player {player_id} already exists or invalid class."}
-    
+
+
+@app.post("/auth/register")
+async def register_player(request: Request):
+    data = await request.json()
+    player_id = data.get("player_id")
+    first_class = data.get("first_class")
+    password = data.get("password")
+    if not player_id or not first_class or not password:
+        return {"message": "Missing player_id, first_class, or password."}
+    if create_player(player_id, first_class, password):
+        return {"message": f"Registered player {player_id}. You can now log in."}
+    return {"message": "Player already exists or invalid class."}
+
+
+@app.post("/auth/login")
+async def login_player(request: Request):
+    data = await request.json()
+    player_id = data.get("player_id")
+    password = data.get("password")
+    if not player_id or password is None:
+        return {"message": "Missing player_id or password."}
+    if not verify_player_password(player_id, password):
+        return {"message": "Invalid login credentials."}
+
+    session_token = create_session(player_id)
+    profile = get_player_profile(player_id)
+    inventory = load_player_inventories().get(player_id, [])
+    gold = get_player_gold(player_id)
+    return {
+        "message": "Login successful.",
+        "session_token": session_token,
+        "player_id": player_id,
+        "profile": profile,
+        "inventory": inventory,
+        "gold": gold,
+    }
+
+
+@app.post("/auth/logout")
+async def logout_player(request: Request):
+    data = await request.json()
+    session_token = data.get("session_token")
+    if not session_token:
+        return {"message": "Missing session_token."}
+    if delete_session(session_token):
+        return {"message": "Logout successful."}
+    return {"message": "Invalid session_token."}
+
+
+@app.get("/player/profile")
+async def player_profile(player_id: str = None, session_token: str = None):
+    if session_token:
+        player_id = validate_session(session_token)
+    if not player_id:
+        return {"message": "Missing or invalid player_id/session_token."}
+    if not player_exists(player_id):
+        return {"message": "Player not found."}
+
+    profile = get_player_profile(player_id)
+    inventory = load_player_inventories().get(player_id, [])
+    gold = get_player_gold(player_id)
+    return {
+        "player_id": player_id,
+        "profile": profile,
+        "inventory": inventory,
+        "gold": gold,
+    }
+
 
 @app.post("/auction/list")
 async def list_item(request: Request):
@@ -216,6 +339,11 @@ async def list_item(request: Request):
     min_price = MINIMUM_PRICES.get(item_name)
     if min_price is not None and price < min_price:
         return {"message": f"Minimum price for {item_name} is {min_price}."}
+
+    inventories = load_player_inventories()
+    if not remove_item_from_inventory(inventories, seller_id, item_name, quantity):
+        return {"message": "Seller does not have enough of this item to list."}
+    save_player_inventories(inventories)
 
     listing = create_listing(item_name, seller_id, price, quantity, duration_hours)
     return {"message": "Item listed!", "listing": listing}
@@ -256,26 +384,36 @@ async def buy_item(request: Request):
         tax = round(total_price * 0.05, 2)
         payout = round(total_price - tax, 2)
 
+        if not player_exists(buyer_id):
+            return {"message": "Buyer does not exist."}
+
+        buyer_gold = get_player_gold(buyer_id)
+        if buyer_gold is None:
+            return {"message": "Buyer does not exist."}
+        if buyer_gold < total_price:
+            return {"message": "Buyer does not have enough gold."}
+
+        seller_id = item["seller_id"]
+        if not player_exists(seller_id):
+            return {"message": "Seller does not exist."}
+
         if item["quantity"] == quantity:
             listings.pop(i)
         else:
             item["quantity"] -= quantity
 
+        change_player_gold(buyer_id, -total_price)
+        change_player_gold(seller_id, payout)
+
         save_auction_listings(listings)
 
         inventories = load_player_inventories()
-        buyer_items = inventories.setdefault(buyer_id, [])
-        for inv_item in buyer_items:
-            if inv_item["item_name"] == item["item_name"]:
-                inv_item["quantity"] += quantity
-                break
-        else:
-            buyer_items.append({"item_name": item["item_name"], "quantity": quantity})
+        add_item_to_inventory(inventories, buyer_id, item["item_name"], quantity)
         save_player_inventories(inventories)
 
         return {
             "message": (
-                f"Purchase successful! {item['seller_id']} receives {payout} gold after 5% tax ({tax} gold taken)."
+                f"Purchase successful! {seller_id} receives {payout} gold after 5% tax ({tax} gold taken)."
             ),
             "tax": tax,
             "seller_payout": payout,

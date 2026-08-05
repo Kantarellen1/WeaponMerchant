@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Edvin's Merchant District</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #151515; color: #f0f0f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .container { background: #20232a; border: 1px solid #444; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); padding: 32px; width: 360px; }
+    h1 { margin-top: 0; font-size: 24px; color: #fff; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+    input { width: 100%; padding: 10px 12px; margin-bottom: 16px; border-radius: 8px; border: 1px solid #444; background: #1b1f27; color: #fff; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #4b8cff; color: #fff; font-size: 16px; cursor: pointer; }
+    button:hover { background: #6aa8ff; }
+    .secondary { margin-top: 12px; text-align: center; font-size: 14px; }
+    .secondary a { color: #9fcfff; text-decoration: none; }
+    .secondary a:hover { text-decoration: underline; }
+    .hidden { display: none; }
+    .message { margin: 12px 0; padding: 12px; border-radius: 8px; background: #2d2d35; color: #fff; }
+    .nav { margin-top: 20px; }
+    .nav button { margin-bottom: 8px; }
+    .section { margin-top: 20px; }
+    .section h2 { margin-bottom: 12px; }
+    .list-item { background: #1f2430; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="login-area">
+      <h1>Login</h1>
+      <div class="message" id="login-message">Log in with your player ID and password.</div>
+      <label for="player-id">Player ID</label>
+      <input id="player-id" placeholder="player123" />
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="••••••••" />
+      <button id="login-button">Login</button>
+      <div class="secondary">
+        <a id="register-link" href="#">Register new player</a>
+      </div>
+    </div>
+
+    <div id="register-area" class="hidden">
+      <h1>Register</h1>
+      <div class="message" id="register-message">Create a new player account.</div>
+      <label for="register-player-id">Player ID</label>
+      <input id="register-player-id" placeholder="player123" />
+      <label for="register-password">Password</label>
+      <input id="register-password" type="password" placeholder="••••••••" />
+      <label for="first-class">First Class</label>
+      <input id="first-class" placeholder="Mage" />
+      <button id="register-button">Register</button>
+      <div class="secondary">
+        <a id="back-to-login" href="#">Back to login</a>
+      </div>
+    </div>
+
+    <div id="admin-area" class="hidden">
+      <h1>Player Dashboard</h1>
+      <div class="message" id="dashboard-message">Welcome! Your player profile is shown below.</div>
+      <div class="section">
+        <h2>Profile</h2>
+        <div id="profile-info" class="message"></div>
+      </div>
+      <div class="section">
+        <h2>Inventory</h2>
+        <div id="inventory-list"></div>
+      </div>
+      <div class="section nav">
+        <button id="visit-town">Visit Town Square</button>
+        <button id="visit-smithy">Visit Smithy</button>
+        <button id="visit-apothecary">Visit Apothecary</button>
+        <button id="visit-general-store">Visit General Store</button>
+        <button id="visit-auction-house">Visit Auction House</button>
+      </div>
+      <button id="logout-button">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    const loginArea = document.getElementById("login-area");
+    const registerArea = document.getElementById("register-area");
+    const adminArea = document.getElementById("admin-area");
+    const loginMessage = document.getElementById("login-message");
+    const registerMessage = document.getElementById("register-message");
+    const profileInfo = document.getElementById("profile-info");
+    const inventoryList = document.getElementById("inventory-list");
+
+    const sessionKey = "weapon_merchant_session";
+
+    function showSection(section) {
+      loginArea.classList.add("hidden");
+      registerArea.classList.add("hidden");
+      adminArea.classList.add("hidden");
+      section.classList.remove("hidden");
+    }
+
+    async function loginPlayer() {
+      const playerId = document.getElementById("player-id").value.trim();
+      const password = document.getElementById("password").value;
+      if (!playerId || !password) {
+        loginMessage.textContent = "Enter both player ID and password.";
+        return;
+      }
+      const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ player_id: playerId, password })
+      });
+      const body = await response.json();
+      if (response.ok && body.session_token) {
+        localStorage.setItem(sessionKey, body.session_token);
+        showDashboard(body);
+      } else {
+        loginMessage.textContent = body.message || "Login failed.";
+      }
+    }
+
+    async function registerPlayer() {
+      const playerId = document.getElementById("register-player-id").value.trim();
+      const password = document.getElementById("register-password").value;
+      const firstClass = document.getElementById("first-class").value.trim();
+      if (!playerId || !password || !firstClass) {
+        registerMessage.textContent = "Fill all fields to register.";
+        return;
+      }
+      const response = await fetch("/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ player_id: playerId, password, first_class: firstClass })
+      });
+      const body = await response.json();
+      registerMessage.textContent = body.message || "Registration failed.";
+      if (response.ok && body.message && body.message.includes("Registered")) {
+        setTimeout(() => showSection(loginArea), 800);
+      }
+    }
+
+    async function loadProfile() {
+      const token = localStorage.getItem(sessionKey);
+      if (!token) {
+        showSection(loginArea);
+        return;
+      }
+      const response = await fetch(`/player/profile?session_token=${token}`);
+      const body = await response.json();
+      if (response.ok && body.player_id) {
+        showDashboard(body);
+      } else {
+        localStorage.removeItem(sessionKey);
+        loginMessage.textContent = body.message || "Session invalid. Please login again.";
+        showSection(loginArea);
+      }
+    }
+
+    function showDashboard(body) {
+      showSection(adminArea);
+      profileInfo.innerHTML = `
+        <strong>Player ID:</strong> ${body.player_id}<br />
+        <strong>Gold:</strong> ${body.gold ?? 0}<br />
+        <strong>Class:</strong> ${body.profile.first_class?.name || "-"} (Lvl ${body.profile.first_class?.level || 0})
+      `;
+      if (body.inventory?.length) {
+        inventoryList.innerHTML = body.inventory.map(item => `
+          <div class="list-item"><strong>${item.item_name}</strong> x ${item.quantity}</div>
+        `).join("");
+      } else {
+        inventoryList.innerHTML = `<div class="message">No items in inventory yet.</div>`;
+      }
+    }
+
+    async function logoutPlayer() {
+      const token = localStorage.getItem(sessionKey);
+      if (token) {
+        await fetch("/auth/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_token: token })
+        });
+      }
+      localStorage.removeItem(sessionKey);
+      showSection(loginArea);
+      loginMessage.textContent = "Logged out successfully.";
+    }
+
+    document.getElementById("login-button").addEventListener("click", loginPlayer);
+    document.getElementById("register-button").addEventListener("click", registerPlayer);
+    document.getElementById("register-link").addEventListener("click", e => {
+      e.preventDefault();
+      showSection(registerArea);
+    });
+    document.getElementById("back-to-login").addEventListener("click", e => {
+      e.preventDefault();
+      showSection(loginArea);
+    });
+    document.getElementById("logout-button").addEventListener("click", logoutPlayer);
+
+    document.getElementById("visit-town").addEventListener("click", () => location.href = "/town");
+    document.getElementById("visit-smithy").addEventListener("click", () => location.href = "/smithy");
+    document.getElementById("visit-apothecary").addEventListener("click", () => location.href = "/apothecary");
+    document.getElementById("visit-general-store").addEventListener("click", () => location.href = "/general-store");
+    document.getElementById("visit-auction-house").addEventListener("click", () => location.href = "/auction-house");
+
+    loadProfile();
+  </script>
+</body>
+</html>

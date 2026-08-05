@@ -1,3 +1,4 @@
+import hashlib
 import json
 
 PLAYER_DATA_FILE = "character/player_data.json"
@@ -20,7 +21,25 @@ def save_player_data(data):
     with open(PLAYER_DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-def create_player(player_id, first_class):
+
+def hash_password(password):
+    if password is None:
+        password = ""
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+
+def verify_player_password(player_id, password):
+    data = load_player_data()
+    player = data.get(player_id)
+    if player is None:
+        return False
+    stored_password = player.get("password")
+    if stored_password is None:
+        return password in (None, "")
+    return stored_password == hash_password(password)
+
+
+def create_player(player_id, first_class, password=None):
     if first_class not in ALL_CLASSES:
         print(f"Invalid class: {first_class}")
         return False
@@ -31,7 +50,9 @@ def create_player(player_id, first_class):
         "first_class": {"name": first_class, "level": 1, "skills": []},
         "second_class": None,
         "hybrid_class": None,
-        "professions": []
+        "professions": [],
+        "gold": 100,
+        "password": hash_password(password) if password is not None else None
     }
     save_player_data(data)
 
@@ -48,6 +69,18 @@ def create_player(player_id, first_class):
     
 
     return True
+
+def get_player_profile(player_id):
+    data = load_player_data()
+    player = data.get(player_id)
+    if player is None:
+        return None
+    return {
+        key: value
+        for key, value in player.items()
+        if key != "password"
+    }
+
 
 def level_up_first_class(player_id):
     data = load_player_data()
