@@ -154,7 +154,12 @@ async def merchant_last_message(player_id: str, merchant_id: str):
 
 @app.get("/")
 async def read_root():
-    return RedirectResponse(url="/login")
+    # Serve the town dashboard as the landing page
+    town_path = STATIC_DIR / "town_square.html"
+    if not town_path.exists():
+        logger.error(f"Town file not found at {town_path}")
+        return {"message": "Town page not found on server."}
+    return FileResponse(town_path)
 
 @app.get("/login")
 async def login_page():
