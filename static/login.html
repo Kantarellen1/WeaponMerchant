@@ -109,7 +109,8 @@
       const body = await response.json();
       if (response.ok && body.session_token) {
         localStorage.setItem(sessionKey, body.session_token);
-        showDashboard(body);
+        // Redirect to town dashboard after successful login
+        window.location.href = '/town';
       } else {
         loginMessage.textContent = body.message || "Login failed.";
       }
@@ -144,7 +145,8 @@
       const response = await fetch(`/player/profile?session_token=${token}`);
       const body = await response.json();
       if (response.ok && body.player_id) {
-        showDashboard(body);
+        // Already logged in — go to town dashboard
+        window.location.href = '/town';
       } else {
         localStorage.removeItem(sessionKey);
         loginMessage.textContent = body.message || "Session invalid. Please login again.";
