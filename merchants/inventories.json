@@ -1,0 +1,31 @@
+{
+  "finn": {
+    "name": "Finn General Store",
+    "bias": -0.02,
+    "competitiveness": 0.7,
+    "unlimited": true,
+    "inventory": [
+      {"item_id": "potion_small", "name": "Small Potion", "base_price": 10, "quantity": 20, "demand": 5, "supply": 20}
+    ]
+  },
+  "gerik": {
+    "name": "Gerik Smithy",
+    "bias": 0.05,
+    "competitiveness": 0.4,
+    "unlimited": true,
+    "inventory": [
+      {"item_id": "iron_sword", "name": "Iron Sword", "base_price": 100, "quantity": 100, "demand": 8, "supply": 3}
+    ]
+  }
+  ,
+  "elara": {
+    "name": "Elara Apothecary",
+    "bias": 0.03,
+    "competitiveness": 0.5,
+    "unlimited": true,
+    "inventory": [
+      {"item_id": "healing_potion", "name": "Healing potion", "base_price": 30, "quantity": 15, "demand": 7, "supply": 15},
+      {"item_id": "mana_potion", "name": "Mana potion", "base_price": 25, "quantity": 10, "demand": 4, "supply": 10}
+    ]
+  }
+}

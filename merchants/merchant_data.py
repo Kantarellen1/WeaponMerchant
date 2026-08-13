@@ -2,6 +2,7 @@ import json
 import subprocess
 import os
 from merchants.prompts import build_prompt
+from merchants.inventory import MerchantInventory
 
 # Ensure the memory file is always resolved relative to this module
 MEMORY_FILE = os.path.join(os.path.dirname(__file__), "merchant_memory.json")
@@ -166,4 +167,15 @@ def run_ollama(prompt):
     except Exception as e:
         print(f"Ollama error: {e}")
         return None
+
+
+def get_merchant_price(merchant_id, item_key, fallback_base=None):
+    """Return a merchant-specific price for an item, backed by market data when available."""
+    try:
+        inv = MerchantInventory(merchant_id)
+        return inv.compute_price(item_key, fallback_base)
+    except Exception as e:
+        print(f"Error computing merchant price: {e}")
+        # fallback simple behavior
+        return fallback_base or 1.0
 

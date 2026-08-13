@@ -187,3 +187,110 @@ def cancel_auction_listing(item_id):
             save_player_inventories(inventories)
             return item
     return None
+
+
+def get_market_price(item_name, lookback_hours=24, method="median"):
+    """Return a market price for item_name based on current auction listings.
+    Uses active listings as a simple market snapshot. Returns None if no data.
+    """
+    listings = load_auction_listings()
+    prices = [float(l.get("price", 0)) for l in listings if l.get("item_name", "").lower() == item_name.lower()]
+    if not prices:
+        return None
+    if method == "median":
+        try:
+            import statistics
+
+            return round(statistics.median(prices), 2)
+        except Exception:
+            return round(sum(prices) / len(prices), 2)
+    # fallback to average
+    return round(sum(prices) / len(prices), 2)
+
+
+def get_market_snapshot(item_name):
+    """Return a small snapshot (count, avg, median) for diagnostics or decisions."""
+    listings = load_auction_listings()
+    prices = []
+    total_quantity = 0
+    for l in listings:
+        if l.get("item_name", "").lower() == item_name.lower():
+            try:
+                prices.append(float(l.get("price", 0)))
+            except Exception:
+                continue
+            try:
+                total_quantity += int(l.get("quantity", 1))
+            except Exception:
+                total_quantity += 1
+
+    if not prices:
+        return {"count": 0, "avg": None, "median": None, "total_quantity": 0}
+    import statistics
+
+    return {
+        "count": len(prices),
+        "avg": round(sum(prices) / len(prices), 2),
+        "median": round(statistics.median(prices), 2),
+        "total_quantity": int(total_quantity),
+    }
+
+
+def buy_auction_listing(listing_id: str, buyer_id: str, quantity: int = 1):
+    """Attempt to buy `quantity` units from an auction listing.
+
+    Transfers gold from buyer to seller, moves items into buyer inventory,
+    and updates/removes the listing. Returns (True, details) or (False, error).
+    """
+    if quantity <= 0:
+        return False, "Quantity must be positive"
+
+    listings = load_auction_listings()
+    for idx, listing in enumerate(listings):
+        if listing.get("item_id") == listing_id:
+            avail = int(listing.get("quantity", 1))
+            if quantity > avail:
+                return False, "Not enough quantity in listing"
+
+            unit_price = float(listing.get("price", 0))
+            total_price = round(unit_price * int(quantity), 2)
+
+            buyer_gold = get_player_gold(buyer_id)
+            if buyer_gold is None:
+                return False, "Buyer not found"
+            if buyer_gold < total_price:
+                return False, "Insufficient gold"
+
+            # Deduct buyer gold
+            if not change_player_gold(buyer_id, -total_price):
+                return False, "Failed to deduct buyer gold"
+
+            # Credit seller (if seller exists in player data)
+            seller_id = listing.get("seller_id")
+            try:
+                change_player_gold(seller_id, total_price)
+            except Exception:
+                # best effort; if seller not a player this may fail silently
+                pass
+
+            # Add item to buyer inventory
+            inventories = load_player_inventories()
+            item_name = listing.get("item_name")
+            added = add_item_to_inventory(inventories, buyer_id, item_name, int(quantity))
+            if not added:
+                # rollback buyer gold and seller credit
+                change_player_gold(buyer_id, total_price)
+                change_player_gold(seller_id, -total_price)
+                return False, "Failed to add item to buyer inventory"
+            save_player_inventories(inventories)
+
+            # Update or remove listing
+            if quantity == avail:
+                listings.pop(idx)
+            else:
+                listing["quantity"] = avail - int(quantity)
+            save_auction_listings(listings)
+
+            return True, {"item": item_name, "quantity": int(quantity), "unit_price": unit_price, "total": total_price}
+
+    return False, "Listing not found"
