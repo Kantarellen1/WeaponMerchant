@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 import os
 from merchants.prompts import build_prompt
@@ -148,6 +149,16 @@ def get_fallback_response(merchant_id, message):
     return merchant_responses["default"]
 
 
+def strip_ansi(text):
+    """Remove terminal control sequences from CLI output so text remains readable."""
+    if not text:
+        return text
+    ansi_escape = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
+    text = ansi_escape.sub("", text)
+    text = text.replace("\r", "")
+    return text.strip()
+
+
 def run_ollama(prompt):
     """
     Run ollama (or substitute model runner). Decode output safely to avoid Unicode errors.
@@ -162,7 +173,7 @@ def run_ollama(prompt):
         )
         if result.returncode == 0 and result.stdout:
             out = result.stdout.decode("utf-8", errors="replace")
-            return out.strip()
+            return strip_ansi(out)
         return None
     except Exception as e:
         print(f"Ollama error: {e}")
