@@ -16,6 +16,7 @@ from auction_house.auction_data import (
     remove_item_from_inventory,
 )
 from guilds.main_guild_data import get_baseline_price
+from merchants.prompts import get_guild_price
 
 INVENTORY_FILE = Path(__file__).resolve().parent / "inventories.json"
 
@@ -148,6 +149,13 @@ class MerchantInventory:
 
         return price
 
+    def compute_shop_price(self, item_key: str, town: str = "Edvin") -> float:
+        """Return the guild price shown for a direct town-shop purchase."""
+        item = self.get_item(item_key)
+        if item is None:
+            return 0.0
+        return float(get_guild_price(item.get("name", item_key), town))
+
 
 if __name__ == "__main__":
     # quick demo
@@ -176,7 +184,10 @@ def purchase_from_merchant(player_id: str, merchant_id: str, item_key: str, quan
     if not inv.data.get("unlimited") and int(item.get("quantity", 0)) < int(quantity):
         return False, "Merchant does not have enough stock"
 
-    unit_price = inv.compute_price(item_key, fallback_base=item.get("base_price"))
+    if merchant_id == "gerik":
+        unit_price = inv.compute_shop_price(item_key)
+    else:
+        unit_price = inv.compute_price(item_key, fallback_base=item.get("base_price"))
     total_price = round(unit_price * int(quantity), 2)
 
     player_gold = get_player_gold(player_id)
@@ -237,7 +248,10 @@ def quote_purchase(player_id: str, merchant_id: str, item_key: str, quantity: in
     if not item:
         return {"error": "Item not found"}
 
-    unit_price = inv.compute_price(item_key, fallback_base=item.get("base_price"))
+    if merchant_id == "gerik":
+        unit_price = inv.compute_shop_price(item_key)
+    else:
+        unit_price = inv.compute_price(item_key, fallback_base=item.get("base_price"))
     total_price = round(unit_price * int(quantity), 2)
 
     player_gold = get_player_gold(player_id)
