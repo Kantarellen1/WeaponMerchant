@@ -166,7 +166,7 @@ if __name__ == "__main__":
     print("Price for Small Potion:", m.compute_price("potion_small", fallback_base=10))
 
 
-def purchase_from_merchant(player_id: str, merchant_id: str, item_key: str, quantity: int = 1):
+def purchase_from_merchant(player_id: str, merchant_id: str, item_key: str, quantity: int = 1, town: str = "Edvin"):
     """Handle a player buying `quantity` of `item_key` from `merchant_id`.
 
     Returns (True, details) on success or (False, error_message) on failure.
@@ -186,10 +186,7 @@ def purchase_from_merchant(player_id: str, merchant_id: str, item_key: str, quan
     if not inv.data.get("unlimited") and int(item.get("quantity", 0)) < int(quantity):
         return False, "Merchant does not have enough stock"
 
-    if merchant_id == "gerik":
-        unit_price = inv.compute_shop_price(item_key)
-    else:
-        unit_price = inv.compute_price(item_key, fallback_base=item.get("base_price"))
+    unit_price = inv.compute_shop_price(item_key, town)
     total_price = round(unit_price * int(quantity), 2)
 
     player_gold = get_player_gold(player_id)
@@ -236,7 +233,7 @@ def purchase_from_merchant(player_id: str, merchant_id: str, item_key: str, quan
     return True, {"item": item.get("name", item.get("item_id")), "quantity": int(quantity), "unit_price": unit_price, "total": total_price}
 
 
-def quote_purchase(player_id: str, merchant_id: str, item_key: str, quantity: int = 1):
+def quote_purchase(player_id: str, merchant_id: str, item_key: str, quantity: int = 1, town: str = "Edvin"):
     """Return a quote for buying `quantity` of `item_key` from `merchant_id`.
 
     Returns a dict: {unit_price, total_price, affordable, player_gold, available_quantity}
@@ -250,10 +247,7 @@ def quote_purchase(player_id: str, merchant_id: str, item_key: str, quantity: in
     if not item:
         return {"error": "Item not found"}
 
-    if merchant_id == "gerik":
-        unit_price = inv.compute_shop_price(item_key)
-    else:
-        unit_price = inv.compute_price(item_key, fallback_base=item.get("base_price"))
+    unit_price = inv.compute_shop_price(item_key, town)
     total_price = round(unit_price * int(quantity), 2)
 
     player_gold = get_player_gold(player_id)

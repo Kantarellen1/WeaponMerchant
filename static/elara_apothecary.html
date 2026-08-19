@@ -103,6 +103,22 @@
         .leave-btn:hover {
             background: #A0522D;
         }
+        .purchase-panel {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 20px 0;
+            padding: 16px;
+            border: 2px solid #2E8B57;
+            border-radius: 8px;
+            background: rgba(240,248,255,0.96);
+            color: #333;
+        }
+        .purchase-details { display: grid; gap: 4px; }
+        .purchase-details strong { color: #2E8B57; }
+        .purchase-button { padding: 10px 16px; background: #228B22; color: white; border: 0; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .purchase-button:disabled { opacity: 0.55; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -116,6 +132,16 @@
         <div class="bubble-sound">💨 *Bubble bubble* The cauldrons never rest... 🌿</div>
         
         <div class="chat-box" id="chatBox"></div>
+
+        <div class="purchase-panel" id="purchasePanel">
+            <div class="purchase-details">
+                <strong id="purchaseItemName"></strong>
+                <span id="purchasePrice"></span>
+                <span id="purchaseGold"></span>
+                <span id="purchaseStatus"></span>
+            </div>
+            <button class="purchase-button" id="purchaseButton" onclick="buySelectedItem()">Buy</button>
+        </div>
         
         <div class="input-area">
             <input type="text" id="messageInput" placeholder="Speak to Elara..." onkeypress="if(event.key==='Enter') sendMessage()">
@@ -128,6 +154,11 @@
         let playerId = null;
         const merchantId = 'elara';
         const sessionKey = 'weapon_merchant_session';
+        let selectedItemKey = null;
+        const itemAliases = [
+            { key: 'healing_potion', name: 'Healing potion', terms: ['healing potion', 'health potion', 'healing'] },
+            { key: 'mana_potion', name: 'Mana potion', terms: ['mana potion', 'mana'] }
+        ];
 
         async function ensurePlayer() {
             const token = localStorage.getItem(sessionKey);
@@ -167,10 +198,56 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        function findRequestedItem(message) {
+            const normalized = message.toLowerCase();
+            return itemAliases.find(item => item.terms.some(term => normalized.includes(term)));
+        }
+
+        async function showPurchasePanel(item) {
+            selectedItemKey = item.key;
+            const panel = document.getElementById('purchasePanel');
+            const button = document.getElementById('purchaseButton');
+            document.getElementById('purchaseItemName').textContent = item.name;
+            document.getElementById('purchasePrice').textContent = 'Checking price...';
+            document.getElementById('purchaseGold').textContent = '';
+            document.getElementById('purchaseStatus').textContent = '';
+            button.disabled = true;
+            panel.style.display = 'flex';
+            const response = await fetch('/merchant/quote', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_token: localStorage.getItem(sessionKey), merchant_id: merchantId, item_key: item.key, quantity: 1, town: 'Buglia' })
+            });
+            const quote = await response.json();
+            if (quote.error || quote.message) {
+                document.getElementById('purchaseStatus').textContent = quote.error || quote.message;
+                return;
+            }
+            document.getElementById('purchasePrice').textContent = `${quote.unit_price} gold`;
+            document.getElementById('purchaseGold').textContent = `You have ${quote.player_gold} gold`;
+            button.disabled = !quote.affordable;
+            if (!quote.affordable) document.getElementById('purchaseStatus').textContent = 'Not enough gold.';
+        }
+
+        async function buySelectedItem() {
+            if (!selectedItemKey) return;
+            const button = document.getElementById('purchaseButton');
+            const status = document.getElementById('purchaseStatus');
+            button.disabled = true;
+            status.textContent = 'Completing purchase...';
+            const response = await fetch('/merchant/buy', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_token: localStorage.getItem(sessionKey), merchant_id: merchantId, item_key: selectedItemKey, quantity: 1, town: 'Buglia' })
+            });
+            const result = await response.json();
+            status.textContent = result.message;
+            if (result.purchase) document.getElementById('purchaseGold').textContent = `You have ${result.gold} gold`;
+        }
+
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             if (!message) return;
+            const requestedItem = findRequestedItem(message);
 
             addMessage('You', message);
             input.value = '';
@@ -191,6 +268,7 @@
                 
                 const data = await response.json();
                 addMessage('Merchant', data.response);
+                if (requestedItem) showPurchasePanel(requestedItem);
                 
                 // Add ambient apothecary sounds occasionally
                 if (Math.random() < 0.4) {

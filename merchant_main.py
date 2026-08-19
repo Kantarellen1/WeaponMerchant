@@ -64,6 +64,9 @@ MINIMUM_PRICES = {
     "Stamina elixir": 15
 }
 
+MERCHANT_IDS = {"gerik", "finn", "elara"}
+MERCHANT_TOWNS = {"gerik": "Edvin", "finn": "Edvin", "elara": "Buglia"}
+
 def get_merchant_buy_price(item_name):
     min_price = MINIMUM_PRICES.get(item_name)
     if min_price is not None:
@@ -285,19 +288,22 @@ async def merchant_quote(request: Request):
     session_token = data.get("session_token")
     item_key = data.get("item_key")
     quantity = data.get("quantity", 1)
+    merchant_id = data.get("merchant_id", "gerik")
 
     player_id = validate_session(session_token)
     if not player_id:
         return {"message": "Invalid session_token."}
     if not item_key:
         return {"message": "Missing item_key."}
+    if merchant_id not in MERCHANT_IDS:
+        return {"message": "Unknown merchant."}
 
     try:
         quantity = int(quantity)
     except (TypeError, ValueError):
         return {"message": "Quantity must be a number."}
 
-    return quote_purchase(player_id, "gerik", item_key, quantity)
+    return quote_purchase(player_id, merchant_id, item_key, quantity, MERCHANT_TOWNS[merchant_id])
 
 
 @app.post("/merchant/buy")
@@ -306,19 +312,28 @@ async def merchant_buy_item(request: Request):
     session_token = data.get("session_token")
     item_key = data.get("item_key")
     quantity = data.get("quantity", 1)
+    merchant_id = data.get("merchant_id", "gerik")
 
     player_id = validate_session(session_token)
     if not player_id:
         return {"message": "Invalid session_token."}
     if not item_key:
         return {"message": "Missing item_key."}
+    if merchant_id not in MERCHANT_IDS:
+        return {"message": "Unknown merchant."}
 
     try:
         quantity = int(quantity)
     except (TypeError, ValueError):
         return {"message": "Quantity must be a number."}
 
-    success, result = purchase_from_merchant(player_id, "gerik", item_key, quantity)
+    success, result = purchase_from_merchant(
+        player_id,
+        merchant_id,
+        item_key,
+        quantity,
+        MERCHANT_TOWNS[merchant_id],
+    )
     if not success:
         return {"message": result}
 
