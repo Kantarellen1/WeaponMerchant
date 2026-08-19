@@ -128,7 +128,7 @@ def get_sell_price(item_name, town):
     # Merchants buy at 20% below the guild price
     return int(get_guild_price(item_name, town) * 0.8)
 
-def build_prompt(merchant_id, history, town=None, merchant_file=None):
+def build_prompt(merchant_id, history, town=None, merchant_file=None, price_overrides=None):
     merchant_id = merchant_id.lower()
     print(f"DEBUG: merchant_id = {merchant_id}")
 
@@ -208,7 +208,7 @@ def build_prompt(merchant_id, history, town=None, merchant_file=None):
         for item in merchant["inventory"]:
             name = item.get("name", "unknown")
             itype = item.get("type", "item")
-            price = get_guild_price(name, location)
+            price = (price_overrides or {}).get(name, get_guild_price(name, location))
             base += f"- {name} ({itype}): {price} gold\n"
 
     base += (
@@ -220,6 +220,7 @@ def build_prompt(merchant_id, history, town=None, merchant_file=None):
         "- Do not explain or mention the Iron Sword synonym unless the player specifically asks about the name.\n"
         "- Never substitute Battle Axe or any other inventory item for the Longsword.\n"
         "- Mention only items shown in CURRENT INVENTORY.\n"
+        "- Use the exact prices shown in CURRENT INVENTORY.\n"
         "- Write each word once; do not repeat words or phrases.\n\n"
         "Here's your conversation history with this adventurer:\n\n"
     )

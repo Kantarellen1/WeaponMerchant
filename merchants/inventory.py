@@ -80,7 +80,7 @@ class MerchantInventory:
         self.save()
         return True
 
-    def compute_price(self, item_key: str, fallback_base: Optional[float] = None) -> float:
+    def compute_price(self, item_key: str, fallback_base: Optional[float] = None, volatile: bool = True) -> float:
         """Compute a merchant's price for an item by combining market price and local factors."""
         item = self.get_item(item_key)
         if item is None:
@@ -131,9 +131,9 @@ class MerchantInventory:
         max_mult = 2.0
         price = max(min_mult * market_price, min(price, max_mult * market_price))
 
-        # small volatility to avoid identical pricing every call
-        volatility = 0.02
-        price *= 1.0 + random.uniform(-volatility, volatility)
+        # Direct shop quotes disable volatility so chat and Buy show the same price.
+        if volatile:
+            price *= 1.0 + random.uniform(-0.02, 0.02)
 
         # floor, round
         price = max(0.01, round(price, 2))
@@ -150,11 +150,13 @@ class MerchantInventory:
         return price
 
     def compute_shop_price(self, item_key: str, town: str = "Edvin") -> float:
-        """Return the guild price shown for a direct town-shop purchase."""
+        """Return a market-aware town-shop price with a guild-price floor."""
         item = self.get_item(item_key)
         if item is None:
             return 0.0
-        return float(get_guild_price(item.get("name", item_key), town))
+        market_price = self.compute_price(item_key, fallback_base=item.get("base_price"), volatile=False)
+        guild_price = float(get_guild_price(item.get("name", item_key), town))
+        return max(guild_price, market_price)
 
 
 if __name__ == "__main__":

@@ -66,6 +66,15 @@ def get_merchant_file(shop_type):
     return None
 
 
+def get_shop_price_overrides(merchant_id, town="Edvin"):
+    inventory = MerchantInventory(merchant_id)
+    return {
+        item.get("name"): inventory.compute_shop_price(item.get("item_id"), town)
+        for item in inventory.data.get("inventory", [])
+        if item.get("name") and item.get("item_id")
+    }
+
+
 def get_merchant_response(player_id, player_location, shop_type, message, player_name=None):
     merchant_id = get_current_merchant_id(player_location, shop_type)
     merchant_file = get_merchant_file(shop_type)
@@ -82,7 +91,13 @@ def get_merchant_response(player_id, player_location, shop_type, message, player
         entry["player_name"] = player_name
     history.append(entry)
 
-    prompt = build_prompt(merchant_id, history, town=town, merchant_file=merchant_file)
+    prompt = build_prompt(
+        merchant_id,
+        history,
+        town=town,
+        merchant_file=merchant_file,
+        price_overrides=get_shop_price_overrides(merchant_id, town),
+    )
     response = run_ollama(prompt)
 
     if not response:
@@ -110,7 +125,11 @@ def get_merchant_response_by_id(player_id, merchant_id, message, player_name=Non
         entry["player_name"] = player_name
     history.append(entry)
 
-    prompt = build_prompt(merchant_id, history)  # build_prompt will handle missing merchant file defensively
+    prompt = build_prompt(
+        merchant_id,
+        history,
+        price_overrides=get_shop_price_overrides(merchant_id),
+    )  # build_prompt will handle missing merchant file defensively
     response = run_ollama(prompt)
 
     if not response:

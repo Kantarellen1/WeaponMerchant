@@ -14,7 +14,7 @@
     "competitiveness": 0.4,
     "unlimited": true,
     "inventory": [
-      {"item_id": "long_sword", "name": "Longsword", "base_price": 100, "quantity": 100, "demand": 8, "supply": 3},
+      {"item_id": "long_sword", "name": "Longsword", "base_price": 50, "quantity": 100, "demand": 8, "supply": 3},
       {"item_id": "shortsword", "name": "Shortsword", "base_price": 35, "quantity": 100, "demand": 0, "supply": 100},
       {"item_id": "battle_axe", "name": "Battle Axe", "base_price": 60, "quantity": 100, "demand": 0, "supply": 100},
       {"item_id": "dagger", "name": "Dagger", "base_price": 15, "quantity": 100, "demand": 0, "supply": 100},
