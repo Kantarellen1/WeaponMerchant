@@ -216,6 +216,10 @@ def build_prompt(merchant_id, history, town=None, merchant_file=None):
         "- Keep responses 1-2 sentences maximum\n"
         "- Stay in character\n"
         "- Be helpful and try to make sales\n\n"
+        "- Treat 'Iron Sword' as the smithy's name for the listed Longsword.\n"
+        "- Never call an Iron Sword a Battle Axe, and never substitute one inventory item for another.\n"
+        "- Mention only items shown in CURRENT INVENTORY.\n"
+        "- Write each word once; do not repeat words or phrases.\n\n"
         "Here's your conversation history with this adventurer:\n\n"
     )
 

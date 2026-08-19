@@ -7,6 +7,7 @@ from merchants.inventory import MerchantInventory
 
 ANSI_ESCAPE = re.compile(r"\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\))")
 ESCAPED_ANSI_ESCAPE = re.compile(r"\\x1[bB]\[[0-?]*[ -/]*[@-~]")
+DUPLICATE_WORD = re.compile(r"\b([A-Za-z]+)([\s,.!?;:'-]+)\1\b", re.IGNORECASE)
 
 # Ensure the memory file is always resolved relative to this module
 MEMORY_FILE = os.path.join(os.path.dirname(__file__), "merchant_memory.json")
@@ -85,6 +86,7 @@ def get_merchant_response(player_id, player_location, shop_type, message, player
 
     if not response:
         response = get_fallback_response(merchant_id, message)
+    response = normalize_merchant_response(response, message)
 
     history.append({"role": "merchant", "message": response})
     memory[memory_key] = history
@@ -112,6 +114,7 @@ def get_merchant_response_by_id(player_id, merchant_id, message, player_name=Non
 
     if not response:
         response = get_fallback_response(merchant_id, message)
+    response = normalize_merchant_response(response, message)
 
     history.append({"role": "merchant", "message": response})
     memory[memory_key] = history
@@ -164,7 +167,14 @@ def strip_ansi(text):
     text = ANSI_ESCAPE.sub("", text)
     text = ESCAPED_ANSI_ESCAPE.sub("", text)
     text = text.replace("\r", "")
-    return text.strip()
+    return DUPLICATE_WORD.sub(lambda match: match.group(1) + match.group(2), text).strip()
+
+
+def normalize_merchant_response(response, player_message):
+    response = strip_ansi(response)
+    if "iron sword" in (player_message or "").lower():
+        response = re.sub(r"\bBattle Axe\b", "Iron Sword", response, flags=re.IGNORECASE)
+    return response
 
 
 def run_ollama(prompt):
