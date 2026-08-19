@@ -14,7 +14,7 @@
     "competitiveness": 0.4,
     "unlimited": true,
     "inventory": [
-      {"item_id": "long_sword", "name": "Long Sword", "base_price": 100, "quantity": 100, "demand": 8, "supply": 3}
+      {"item_id": "long_sword", "name": "Longsword", "base_price": 100, "quantity": 100, "demand": 8, "supply": 3}
     ]
   }
   ,
