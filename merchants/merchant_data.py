@@ -1,7 +1,8 @@
 import json
 import re
-import subprocess
 import os
+import urllib.error
+import urllib.request
 from merchants.prompts import build_prompt
 from merchants.inventory import MerchantInventory
 
@@ -179,22 +180,25 @@ def normalize_merchant_response(response, player_message):
 
 def run_ollama(prompt):
     """
-    Run ollama (or substitute model runner). Decode output safely to avoid Unicode errors.
+    Generate a response through Ollama's JSON API instead of its interactive CLI.
+    The CLI can emit cursor-edit sequences while rendering output in a terminal.
     """
     try:
-        # capture raw bytes and decode with replacement for invalid bytes
-        result = subprocess.run(
-            ["ollama", "run", "mistral", prompt],
-            capture_output=True,
-            env={**os.environ, "TERM": "dumb", "NO_COLOR": "1"},
-            text=False,
-            timeout=30
+        payload = json.dumps({
+            "model": "mistral",
+            "prompt": prompt,
+            "stream": False,
+        }).encode("utf-8")
+        request = urllib.request.Request(
+            "http://127.0.0.1:11434/api/generate",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
         )
-        if result.returncode == 0 and result.stdout:
-            out = result.stdout.decode("utf-8", errors="replace")
-            return strip_ansi(out)
-        return None
-    except Exception as e:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            result = json.loads(response.read().decode("utf-8"))
+        return normalize_merchant_response(result.get("response"), "")
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as e:
         print(f"Ollama error: {e}")
         return None
 
