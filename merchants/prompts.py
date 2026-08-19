@@ -221,6 +221,7 @@ def build_prompt(merchant_id, history, town=None, merchant_file=None, price_over
         "- Never substitute Battle Axe or any other inventory item for the Longsword.\n"
         "- Mention only items shown in CURRENT INVENTORY.\n"
         "- Use the exact prices shown in CURRENT INVENTORY.\n"
+        "- Answer the adventurer's latest message first. If they ask how much an item costs, state that item's exact price immediately.\n"
         "- Write each word once; do not repeat words or phrases.\n\n"
         "Here's your conversation history with this adventurer:\n\n"
     )

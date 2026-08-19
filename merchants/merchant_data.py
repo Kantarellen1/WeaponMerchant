@@ -75,6 +75,23 @@ def get_shop_price_overrides(merchant_id, town="Edvin"):
     }
 
 
+def get_requested_price_response(merchant_id, message, town="Edvin"):
+    text = (message or "").lower()
+    if not any(term in text for term in ("price", "cost", "how much", "gold")):
+        return None
+
+    inventory = MerchantInventory(merchant_id)
+    for item in inventory.data.get("inventory", []):
+        name = item.get("name", "")
+        terms = {name.lower(), name.lower().replace(" ", "")}
+        if name.lower() == "longsword":
+            terms.update({"iron sword", "long sword", "ironsword"})
+        if any(term in text for term in terms if term):
+            price = inventory.compute_shop_price(item.get("item_id"), town)
+            return f"The {name} costs {price:g} gold. Would you like to buy it?"
+    return None
+
+
 def get_merchant_response(player_id, player_location, shop_type, message, player_name=None):
     merchant_id = get_current_merchant_id(player_location, shop_type)
     merchant_file = get_merchant_file(shop_type)
@@ -103,6 +120,7 @@ def get_merchant_response(player_id, player_location, shop_type, message, player
     if not response:
         response = get_fallback_response(merchant_id, message)
     response = normalize_merchant_response(response, message)
+    response = get_requested_price_response(merchant_id, message, town) or response
 
     history.append({"role": "merchant", "message": response})
     memory[memory_key] = history
@@ -135,6 +153,7 @@ def get_merchant_response_by_id(player_id, merchant_id, message, player_name=Non
     if not response:
         response = get_fallback_response(merchant_id, message)
     response = normalize_merchant_response(response, message)
+    response = get_requested_price_response(merchant_id, message) or response
 
     history.append({"role": "merchant", "message": response})
     memory[memory_key] = history
