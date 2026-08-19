@@ -5,13 +5,21 @@ import os
 from merchants.prompts import build_prompt
 from merchants.inventory import MerchantInventory
 
+ANSI_ESCAPE = re.compile(r"\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\))")
+ESCAPED_ANSI_ESCAPE = re.compile(r"\\x1[bB]\[[0-?]*[ -/]*[@-~]")
+
 # Ensure the memory file is always resolved relative to this module
 MEMORY_FILE = os.path.join(os.path.dirname(__file__), "merchant_memory.json")
 
 def load_memory():
     try:
         with open(MEMORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            memory = json.load(f)
+        for history in memory.values():
+            for entry in history:
+                if "message" in entry:
+                    entry["message"] = strip_ansi(entry["message"])
+        return memory
     except FileNotFoundError:
         return {}
     except (UnicodeDecodeError, json.JSONDecodeError) as e:
@@ -153,8 +161,8 @@ def strip_ansi(text):
     """Remove terminal control sequences from CLI output so text remains readable."""
     if not text:
         return text
-    ansi_escape = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
-    text = ansi_escape.sub("", text)
+    text = ANSI_ESCAPE.sub("", text)
+    text = ESCAPED_ANSI_ESCAPE.sub("", text)
     text = text.replace("\r", "")
     return text.strip()
 
@@ -168,6 +176,7 @@ def run_ollama(prompt):
         result = subprocess.run(
             ["ollama", "run", "mistral", prompt],
             capture_output=True,
+            env={**os.environ, "TERM": "dumb", "NO_COLOR": "1"},
             text=False,
             timeout=30
         )

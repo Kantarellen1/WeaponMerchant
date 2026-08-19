@@ -84,11 +84,15 @@
             const chatBox = document.getElementById('chatBox');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ' + sender.toLowerCase();
-            
+
+            const label = document.createElement('strong');
+            label.textContent = sender === 'Merchant' ? '🔨 Gerik: ' : `${sender}: `;
+            messageDiv.appendChild(label);
+
             if (sender === 'Merchant') {
-                messageDiv.innerHTML = `<strong>🔨 Gerik:</strong> ${message}`;
+                messageDiv.appendChild(document.createTextNode(message));
             } else {
-                messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+                messageDiv.appendChild(document.createTextNode(message));
             }
             
             chatBox.appendChild(messageDiv);
