@@ -26,6 +26,7 @@ from auction_house.auction_data import (
     remove_item_from_inventory,
     add_item_to_inventory,
 )
+from merchants.inventory import purchase_from_merchant, quote_purchase
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import secrets
@@ -275,6 +276,57 @@ async def merchant_buy(request: Request):
     total = buy_price * quantity
     return {
         "message": f"The merchant offers {buy_price} gold per {item_name} (total: {total} gold) for your {quantity} item(s)."
+    }
+
+
+@app.post("/merchant/quote")
+async def merchant_quote(request: Request):
+    data = await request.json()
+    session_token = data.get("session_token")
+    item_key = data.get("item_key")
+    quantity = data.get("quantity", 1)
+
+    player_id = validate_session(session_token)
+    if not player_id:
+        return {"message": "Invalid session_token."}
+    if not item_key:
+        return {"message": "Missing item_key."}
+
+    try:
+        quantity = int(quantity)
+    except (TypeError, ValueError):
+        return {"message": "Quantity must be a number."}
+
+    return quote_purchase(player_id, "gerik", item_key, quantity)
+
+
+@app.post("/merchant/buy")
+async def merchant_buy_item(request: Request):
+    data = await request.json()
+    session_token = data.get("session_token")
+    item_key = data.get("item_key")
+    quantity = data.get("quantity", 1)
+
+    player_id = validate_session(session_token)
+    if not player_id:
+        return {"message": "Invalid session_token."}
+    if not item_key:
+        return {"message": "Missing item_key."}
+
+    try:
+        quantity = int(quantity)
+    except (TypeError, ValueError):
+        return {"message": "Quantity must be a number."}
+
+    success, result = purchase_from_merchant(player_id, "gerik", item_key, quantity)
+    if not success:
+        return {"message": result}
+
+    return {
+        "message": f"Purchase successful: {result['quantity']}x {result['item']} added to your inventory.",
+        "purchase": result,
+        "gold": get_player_gold(player_id),
+        "inventory": load_player_inventories().get(player_id, []),
     }
 
 @app.post("/create_player")

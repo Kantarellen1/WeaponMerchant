@@ -174,6 +174,12 @@ def strip_ansi(text):
 def normalize_merchant_response(response, player_message):
     response = strip_ansi(response)
     response = re.sub(r"\bIron Sword\b", "Longsword", response, flags=re.IGNORECASE)
+    response = re.sub(
+        r"\b(Longsword),?\s+also known as (?:the )?\1\b,?",
+        r"\1",
+        response,
+        flags=re.IGNORECASE,
+    )
     if "iron sword" in (player_message or "").lower():
         response = re.sub(r"\bBattle Axe\b", "Longsword", response, flags=re.IGNORECASE)
     return response

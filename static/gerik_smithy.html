@@ -41,6 +41,31 @@
             color: #333;
             margin: 5px 0;
         }
+        .purchase-panel {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 20px 0;
+            padding: 16px;
+            border: 2px solid #c58b45;
+            border-radius: 8px;
+            background: rgba(255,248,220,0.96);
+            color: #333;
+        }
+        .purchase-details { display: grid; gap: 4px; }
+        .purchase-details strong { color: #654321; }
+        .purchase-button {
+            border: 0;
+            border-radius: 6px;
+            padding: 10px 16px;
+            background: #654321;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .purchase-button:disabled { opacity: 0.55; cursor: not-allowed; }
+        .purchase-status { margin: 8px 0 0; font-size: 14px; }
         /* Rest of your styling... */
     </style>
 </head>
@@ -55,6 +80,16 @@
         <div class="anvil-sound">🔥 *Clang clang* The forge burns bright today... 🔥</div>
         
         <div class="chat-box" id="chatBox"></div>
+
+        <div class="purchase-panel" id="purchasePanel">
+            <div class="purchase-details">
+                <strong id="purchaseItemName"></strong>
+                <span id="purchasePrice"></span>
+                <span id="purchaseGold"></span>
+                <span class="purchase-status" id="purchaseStatus"></span>
+            </div>
+            <button class="purchase-button" id="purchaseButton" onclick="buySelectedItem()">Buy</button>
+        </div>
         
         <div class="input-area">
             <input type="text" id="messageInput" placeholder="Speak to Gerik..." onkeypress="if(event.key==='Enter') sendMessage()">
@@ -67,6 +102,19 @@
         let playerId = null;
         const merchantId = 'gerik';
         const sessionKey = 'weapon_merchant_session';
+        let selectedItemKey = null;
+
+        const itemAliases = [
+            { key: 'long_sword', name: 'Longsword', terms: ['longsword', 'long sword', 'iron sword'] },
+            { key: 'shortsword', name: 'Shortsword', terms: ['shortsword', 'short sword'] },
+            { key: 'battle_axe', name: 'Battle Axe', terms: ['battle axe'] },
+            { key: 'dagger', name: 'Dagger', terms: ['dagger'] },
+            { key: 'wooden_shield', name: 'Wooden Shield', terms: ['wooden shield'] },
+            { key: 'iron_shield', name: 'Iron Shield', terms: ['iron shield'] },
+            { key: 'leather_armor', name: 'Leather Armor', terms: ['leather armor'] },
+            { key: 'chainmail', name: 'Chainmail', terms: ['chainmail'] },
+            { key: 'plate_armor', name: 'Plate Armor', terms: ['plate armor'] }
+        ];
 
         async function ensurePlayer() {
             const token = localStorage.getItem(sessionKey);
@@ -99,10 +147,74 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        function findRequestedItem(message) {
+            const normalized = message.toLowerCase();
+            return itemAliases.find(item => item.terms.some(term => normalized.includes(term)));
+        }
+
+        async function showPurchasePanel(item) {
+            selectedItemKey = item.key;
+            const panel = document.getElementById('purchasePanel');
+            const button = document.getElementById('purchaseButton');
+            document.getElementById('purchaseItemName').textContent = item.name;
+            document.getElementById('purchasePrice').textContent = 'Checking price...';
+            document.getElementById('purchaseGold').textContent = '';
+            document.getElementById('purchaseStatus').textContent = '';
+            button.disabled = true;
+            panel.style.display = 'flex';
+
+            const response = await fetch('/merchant/quote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_token: localStorage.getItem(sessionKey),
+                    item_key: item.key,
+                    quantity: 1
+                })
+            });
+            const quote = await response.json();
+            if (quote.error || quote.message) {
+                document.getElementById('purchaseStatus').textContent = quote.error || quote.message;
+                return;
+            }
+
+            document.getElementById('purchasePrice').textContent = `${quote.unit_price} gold`;
+            document.getElementById('purchaseGold').textContent = `You have ${quote.player_gold} gold`;
+            button.disabled = !quote.affordable;
+            if (!quote.affordable) {
+                document.getElementById('purchaseStatus').textContent = 'Not enough gold.';
+            }
+        }
+
+        async function buySelectedItem() {
+            if (!selectedItemKey) return;
+            const button = document.getElementById('purchaseButton');
+            const status = document.getElementById('purchaseStatus');
+            button.disabled = true;
+            status.textContent = 'Completing purchase...';
+
+            const response = await fetch('/merchant/buy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_token: localStorage.getItem(sessionKey),
+                    item_key: selectedItemKey,
+                    quantity: 1
+                })
+            });
+            const result = await response.json();
+            status.textContent = result.message;
+            if (result.purchase) {
+                document.getElementById('purchaseGold').textContent = `You have ${result.gold} gold`;
+            }
+        }
+
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             if (!message) return;
+
+            const requestedItem = findRequestedItem(message);
 
             addMessage('You', message);
             input.value = '';
@@ -124,6 +236,7 @@
                 const data = await response.json();
                 // Display the merchant's reply in the chat box
                 addMessage('Merchant', data.response);
+                if (requestedItem) showPurchasePanel(requestedItem);
 
                 
                 if (Math.random() < 0.3) {

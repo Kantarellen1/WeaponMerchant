@@ -217,6 +217,7 @@ def build_prompt(merchant_id, history, town=None, merchant_file=None):
         "- Stay in character\n"
         "- Be helpful and try to make sales\n\n"
         "- 'Iron Sword' is a player synonym for the listed Longsword; always call the item 'Longsword' in your replies.\n"
+        "- Do not explain or mention the Iron Sword synonym unless the player specifically asks about the name.\n"
         "- Never substitute Battle Axe or any other inventory item for the Longsword.\n"
         "- Mention only items shown in CURRENT INVENTORY.\n"
         "- Write each word once; do not repeat words or phrases.\n\n"
